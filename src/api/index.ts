@@ -30,3 +30,16 @@ export {
   removeBookmark,
   getBookmarks,
 } from "./engagement.js";
+
+export {
+  followUser,
+  unfollowUser,
+  getFollowing,
+  getFollowers,
+  blockUser,
+  unblockUser,
+  getBlocked,
+  muteUser,
+  unmuteUser,
+  getMuted,
+} from "./relationships.js";

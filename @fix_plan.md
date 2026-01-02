@@ -1,12 +1,11 @@
 # Ralph Fix Plan
 
 ## High Priority
-- [ ] Implement user commands (follow, unfollow, block, mute)
-- [ ] Add configuration management
 - [ ] Implement list commands
+- [ ] Create user documentation (README)
 
 ## Medium Priority
-- [ ] Create user documentation (README)
+- [ ] Add configuration management (x config)
 - [ ] Extended feature set (DMs)
 - [ ] Grok integration
 - [ ] REPL mode
@@ -33,6 +32,9 @@
 - [x] Implement search command
 - [x] Implement engagement commands (like, unlike, repost, unrepost)
 - [x] Implement bookmark commands (add, list, remove)
+- [x] Implement user commands (follow, unfollow, following, followers)
+- [x] Implement block/unblock commands with blocks list
+- [x] Implement mute/unmute commands with mutes list
 
 ## Notes
 - Focus on MVP functionality first

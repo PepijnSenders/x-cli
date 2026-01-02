@@ -19,6 +19,16 @@ import {
   createRepostCommand,
   createUnrepostCommand,
   createBookmarkCommand,
+  createFollowCommand,
+  createUnfollowCommand,
+  createFollowingCommand,
+  createFollowersCommand,
+  createBlockCommand,
+  createUnblockCommand,
+  createBlocksCommand,
+  createMuteCommand,
+  createUnmuteCommand,
+  createMutesCommand,
 } from "./cli/index.js";
 import { setOutputOptions } from "./output/index.js";
 
@@ -66,6 +76,16 @@ program.addCommand(createUnlikeCommand());
 program.addCommand(createRepostCommand());
 program.addCommand(createUnrepostCommand());
 program.addCommand(createBookmarkCommand());
+program.addCommand(createFollowCommand());
+program.addCommand(createUnfollowCommand());
+program.addCommand(createFollowingCommand());
+program.addCommand(createFollowersCommand());
+program.addCommand(createBlockCommand());
+program.addCommand(createUnblockCommand());
+program.addCommand(createBlocksCommand());
+program.addCommand(createMuteCommand());
+program.addCommand(createUnmuteCommand());
+program.addCommand(createMutesCommand());
 
 // Parse and execute
 program.parse();

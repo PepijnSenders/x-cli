@@ -10,3 +10,15 @@ export {
   createUnrepostCommand,
   createBookmarkCommand,
 } from "./engagement.js";
+export {
+  createFollowCommand,
+  createUnfollowCommand,
+  createFollowingCommand,
+  createFollowersCommand,
+  createBlockCommand,
+  createUnblockCommand,
+  createBlocksCommand,
+  createMuteCommand,
+  createUnmuteCommand,
+  createMutesCommand,
+} from "./relationships.js";
