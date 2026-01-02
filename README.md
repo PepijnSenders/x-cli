@@ -15,6 +15,8 @@
 
 - **Full X API v2** — Posts, timelines, users, lists, DMs, spaces, media, engagement
 - **Grok AI Integration** — Natural language commands, summarization, analysis, drafting
+- **Interactive Mode** — REPL with history and tab completion
+- **Shell Completions** — bash, zsh, fish autocompletions
 - **OAuth 2.0 PKCE** — Secure authentication, no API keys exposed
 - **Type-safe** — Zod validation on all API responses
 - **Beautiful output** — Pretty terminal formatting or JSON for pipes
@@ -223,12 +225,57 @@ Requires `XAI_API_KEY` environment variable.
 
 </details>
 
+<details>
+<summary><strong>Configuration</strong></summary>
+
+```bash
+x config get <key>             # Get config value
+x config set <key> <value>     # Set config value
+x config list                  # List all config
+x config reset                 # Reset to defaults
+```
+
+Available settings: `default_output` (json/pretty), `default_limit` (1-100)
+
+</details>
+
+<details>
+<summary><strong>Shell Completions</strong></summary>
+
+```bash
+x completion bash              # Generate bash completions
+x completion zsh               # Generate zsh completions
+x completion fish              # Generate fish completions
+
+# Install completions
+eval "$(x completion bash)"    # Add to .bashrc
+```
+
+</details>
+
+<details>
+<summary><strong>Interactive Mode</strong></summary>
+
+```bash
+x -i                           # Start interactive REPL
+x --interactive                # Same as above
+
+# In REPL:
+x> timeline home
+x> post create "Hello!"
+x> help
+x> exit
+```
+
+</details>
+
 ## Global Options
 
 ```bash
 -j, --json       Force JSON output
 -q, --quiet      Suppress non-essential output
 -v, --verbose    Debug information
+-i, --interactive  Start interactive REPL mode
 --no-color       Disable colors
 ```
 

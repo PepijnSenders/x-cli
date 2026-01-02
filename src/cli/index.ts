@@ -27,3 +27,6 @@ export { createDMCommand } from "./dm.js";
 export { createSpaceCommand, createSpacesCommand } from "./space.js";
 export { createMediaCommand } from "./media.js";
 export { createGrokCommand } from "./grok.js";
+export { createConfigCommand } from "./config.js";
+export { createCompletionCommand } from "./completion.js";
+export { startInteractiveMode } from "./interactive.js";

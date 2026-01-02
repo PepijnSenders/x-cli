@@ -1,6 +1,6 @@
 # X-CLI Implementation Plan
 
-## Status: P1 Complete | P2 Complete | P3 Complete | P4 Complete | P5 Complete | P6 Complete | P7 Complete | P8 Pending
+## Status: P1 Complete | P2 Complete | P3 Complete | P4 Complete | P5 Complete | P6 Complete | P7 Complete | P8 Complete
 
 This document tracks the implementation of x-cli based on the spec phases.
 
@@ -222,23 +222,23 @@ This document tracks the implementation of x-cli based on the spec phases.
 ## Phase 8: Polish & Release (specs/08-polish-release.md)
 
 ### Interactive Mode
-- [ ] `x -i` / `x --interactive` - REPL mode
-- [ ] Command history (up arrow)
-- [ ] Tab completion in REPL
-- [ ] `clear` / `exit` / `history` commands
-- [ ] Graceful Ctrl+C handling
+- [x] `x -i` / `x --interactive` - REPL mode
+- [x] Command history (up arrow)
+- [x] Tab completion in REPL
+- [x] `clear` / `exit` / `history` commands
+- [x] Graceful Ctrl+C handling
 
 ### Shell Completions
-- [ ] `x completion bash` - bash completions
-- [ ] `x completion zsh` - zsh completions
-- [ ] `x completion fish` - fish completions
+- [x] `x completion bash` - bash completions
+- [x] `x completion zsh` - zsh completions
+- [x] `x completion fish` - fish completions
 
 ### Configuration Commands
-- [ ] `x config set <key> <value>` - set config
-- [ ] `x config get <key>` - get config value
-- [ ] `x config list` - list all config
-- [ ] `x config reset` - reset to defaults
-- [ ] Config file at ~/.config/x-cli/config.json
+- [x] `x config set <key> <value>` - set config
+- [x] `x config get <key>` - get config value
+- [x] `x config list` - list all config
+- [x] `x config reset` - reset to defaults
+- [x] Config file at ~/.config/x-cli/config.json
 
 ### Documentation
 - [x] README.md with features, install, quick start
@@ -280,6 +280,13 @@ These items from specs/09-12 are now in scope:
 
 ## Recent Enhancements
 
+**2025-01-03 (Polish & Release - COMPLETE!):**
+- Implemented interactive REPL mode (`x -i`) with history and tab completion
+- Shell completions for bash, zsh, and fish
+- Configuration system with `x config` commands
+- Settings: default_output, default_limit stored in ~/.config/x-cli/config.json
+- All 28 tests passing, TypeScript clean
+
 **2025-01-03 (Grok Integration - COMPLETE!):**
 - Implemented Grok API client (api.x.ai/v1, chat completions)
 - Natural language command parsing with confidence scoring
@@ -287,20 +294,11 @@ These items from specs/09-12 are now in scope:
 - Analysis: sentiment, topics, engagement prediction
 - Content generation: drafts with tone, reply suggestions
 - CLI commands: grok, grok summarize, grok analyze, grok draft, grok reply, grok ask
-- All 28 tests passing, TypeScript clean
 
 **2025-01-03 (Spaces & Media - COMPLETE!):**
 - Implemented Spaces API client (lookup, search, by creator, buyers)
-- Created CLI commands: space get, space search, space buyers, spaces
 - Implemented Media API client (simple upload, chunked upload, status)
-- Created CLI commands: media upload, media status, media wait
-- Support for alt text, progress indicators, async processing
-
-**2025-01-03 (Direct Messages - COMPLETE!):**
-- Implemented DM API client (listConversations, getMessages, send, delete)
-- Created CLI commands: dm list, dm view, dm conversation, dm send, dm group, dm delete
-- Pretty output for conversation list and message display
-- Group DM creation support
+- Created CLI commands for spaces and media management
 
 **Previous Work:**
 - Foundation complete (OAuth 2.0 PKCE, HTTP client, formatters)
@@ -308,13 +306,14 @@ These items from specs/09-12 are now in scope:
 - Engagement complete (like, repost, bookmark)
 - Users complete (lookup, follow, block, mute)
 - Lists complete (CRUD, timeline, members, follow, pin)
+- Direct Messages complete (conversations, send, group DM)
 
 ---
 
 ## Next Priority
 
-**Phase 8: Polish & Release** - Implement polish features:
-1. Interactive REPL mode (`x -i`)
-2. Shell completions (bash, zsh, fish)
-3. Configuration commands (`x config`)
-4. Final documentation (CHANGELOG, CONTRIBUTING)
+**All core phases complete!** Remaining items:
+1. Documentation: CHANGELOG.md, CONTRIBUTING.md
+2. Testing: Integration tests, 100% coverage
+3. Release: npm package, Homebrew formula, binary releases
+4. Future: Website, Claude/MCP integration

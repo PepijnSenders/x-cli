@@ -36,6 +36,9 @@ import {
   createSpacesCommand,
   createMediaCommand,
   createGrokCommand,
+  createConfigCommand,
+  createCompletionCommand,
+  startInteractiveMode,
 } from "./cli/index.js";
 import { setOutputOptions } from "./output/index.js";
 
@@ -51,7 +54,8 @@ program
   .option("-j, --json", "Force JSON output")
   .option("-q, --quiet", "Suppress non-essential output")
   .option("-v, --verbose", "Debug information")
-  .option("--no-color", "Disable colors");
+  .option("--no-color", "Disable colors")
+  .option("-i, --interactive", "Start interactive REPL mode");
 
 // Hook to process global options before commands run
 program.hook("preAction", (thisCommand) => {
@@ -100,6 +104,15 @@ program.addCommand(createSpaceCommand());
 program.addCommand(createSpacesCommand());
 program.addCommand(createMediaCommand());
 program.addCommand(createGrokCommand());
+program.addCommand(createConfigCommand());
+program.addCommand(createCompletionCommand());
 
-// Parse and execute
-program.parse();
+// Handle interactive mode before parsing
+const args = process.argv.slice(2);
+if (args.includes("-i") || args.includes("--interactive")) {
+  // Start interactive mode
+  startInteractiveMode();
+} else {
+  // Parse and execute normally
+  program.parse();
+}
