@@ -19,11 +19,12 @@ Two distribution methods:
 ## Skill Structure
 
 ```
-x-cli-skill/
+x-cli/
 ├── SKILL.md              # Main skill file (required)
-├── COMMANDS.md           # Full command reference
-├── EXAMPLES.md           # Real-world usage examples
-└── TROUBLESHOOTING.md    # Common issues and fixes
+└── docs/
+    ├── commands.md       # Full command reference
+    ├── examples.md       # Real-world usage examples
+    └── troubleshooting.md # Common issues and fixes
 ```
 
 ### SKILL.md
@@ -137,12 +138,12 @@ x timeline home | jq '.data[0]'            # Pipe to jq
 
 ## Additional Resources
 
-- For complete command reference, see [COMMANDS.md](COMMANDS.md)
-- For usage examples, see [EXAMPLES.md](EXAMPLES.md)
-- For troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- @docs/commands.md - Complete command reference with all flags
+- @docs/examples.md - Real-world usage patterns and scripts
+- @docs/troubleshooting.md - Common issues and fixes
 ```
 
-### COMMANDS.md
+### docs/commands.md
 
 ```markdown
 # X CLI Command Reference
@@ -277,7 +278,7 @@ Requires `XAI_API_KEY` environment variable.
 | `x completion bash\|zsh\|fish` | Shell completions |
 ```
 
-### EXAMPLES.md
+### docs/examples.md
 
 ```markdown
 # X CLI Examples
@@ -442,7 +443,7 @@ x post create "Listening to: $SONG"
 ```
 ```
 
-### TROUBLESHOOTING.md
+### docs/troubleshooting.md
 
 ```markdown
 # X CLI Troubleshooting

@@ -1,7 +1,7 @@
 # Ralph Fix Plan
 
 ## High Priority
-- [ ] Create user documentation (README)
+(None - core MVP complete)
 
 ## Medium Priority
 - [ ] Add configuration management (x config)
@@ -35,6 +35,7 @@
 - [x] Implement block/unblock commands with blocks list
 - [x] Implement mute/unmute commands with mutes list
 - [x] Implement list commands (CRUD, members, timeline, follow, pin)
+- [x] Create README documentation
 
 ## Notes
 - Focus on MVP functionality first
