@@ -88,3 +88,16 @@ export {
   waitForProcessing,
   setMediaAltText,
 } from "./media.js";
+
+export {
+  parseNaturalLanguage,
+  summarize,
+  analyze,
+  draft,
+  suggestReplies,
+  ask,
+  type AnalysisResult,
+  type SummaryResult,
+  type DraftResult,
+  type ParsedCommand,
+} from "./grok.js";

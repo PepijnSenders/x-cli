@@ -35,6 +35,7 @@ import {
   createSpaceCommand,
   createSpacesCommand,
   createMediaCommand,
+  createGrokCommand,
 } from "./cli/index.js";
 import { setOutputOptions } from "./output/index.js";
 
@@ -98,6 +99,7 @@ program.addCommand(createDMCommand());
 program.addCommand(createSpaceCommand());
 program.addCommand(createSpacesCommand());
 program.addCommand(createMediaCommand());
+program.addCommand(createGrokCommand());
 
 // Parse and execute
 program.parse();

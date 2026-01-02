@@ -14,6 +14,7 @@
 ## Features
 
 - **Full X API v2** — Posts, timelines, users, lists, DMs, spaces, media, engagement
+- **Grok AI Integration** — Natural language commands, summarization, analysis, drafting
 - **OAuth 2.0 PKCE** — Secure authentication, no API keys exposed
 - **Type-safe** — Zod validation on all API responses
 - **Beautiful output** — Pretty terminal formatting or JSON for pipes
@@ -201,6 +202,24 @@ x media upload <file> --wait   # Wait for processing
 x media status <id>            # Check processing status
 x media wait <id>              # Wait for processing complete
 ```
+
+</details>
+
+<details>
+<summary><strong>Grok AI</strong></summary>
+
+```bash
+x grok "show my last 5 posts"  # Natural language parsing
+x grok summarize <post_id>     # Summarize a thread
+x grok summarize @username     # Summarize user's posts
+x grok analyze <post_id>       # Sentiment & topic analysis
+x grok draft "topic"           # Draft a post
+x grok draft "topic" --tone professional  # With tone
+x grok reply <post_id>         # Suggest replies
+x grok ask "question"          # Ask about your timeline
+```
+
+Requires `XAI_API_KEY` environment variable.
 
 </details>
 
