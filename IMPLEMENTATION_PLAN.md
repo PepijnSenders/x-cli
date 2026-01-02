@@ -1,6 +1,6 @@
 # X-CLI Implementation Plan
 
-## Status: P1 Complete | P2 Complete | P3 Complete | P4 Complete | P5 Pending | P6 Pending | P7 Pending | P8 Pending
+## Status: P1 Complete | P2 Complete | P3 Complete | P4 Complete | P5 Complete | P6 Pending | P7 Pending | P8 Pending
 
 This document tracks the implementation of x-cli based on the spec phases.
 
@@ -151,18 +151,18 @@ This document tracks the implementation of x-cli based on the spec phases.
 ## Phase 5: Direct Messages (specs/05-direct-messages.md)
 
 ### DM Conversations
-- [ ] `x dm list` - list conversations
-- [ ] `x dm <username>` - view conversation with user
-- [ ] `x dm --conversation <id>` - view by conversation ID
-- [ ] DM API client implementation
+- [x] `x dm list` - list conversations
+- [x] `x dm view <username>` - view conversation with user
+- [x] `x dm conversation <id>` - view by conversation ID
+- [x] DM API client implementation
 
 ### DM Send/Delete
-- [ ] `x dm send <username> <text>` - send DM
-- [ ] `x dm send --media <file>` - DM with media
-- [ ] `x dm delete <event_id>` - delete message
+- [x] `x dm send <username> <text>` - send DM
+- [ ] `x dm send --media <file>` - DM with media (requires media upload)
+- [x] `x dm delete <event_id>` - delete message
 
 ### Group DM
-- [ ] `x dm group create -u user1 -u user2 <text>` - create group DM
+- [x] `x dm group -u user1 -u user2 <text>` - create group DM
 
 ---
 
@@ -278,11 +278,17 @@ These items from specs/09-12 are now in scope:
 
 ## Recent Enhancements
 
+**2025-01-03 (Direct Messages - COMPLETE!):**
+- Implemented DM API client (listConversations, getMessages, send, delete)
+- Created CLI commands: dm list, dm view, dm conversation, dm send, dm group, dm delete
+- Pretty output for conversation list and message display
+- Group DM creation support
+- All 28 tests passing, TypeScript clean
+
 **2025-01-03 (Lists & Documentation - COMPLETE!):**
 - Implemented full Lists API (CRUD, timeline, members, follow, pin)
 - Created comprehensive CLI commands for list management
 - Added README documentation with features, install, commands reference
-- All 28 tests passing, TypeScript clean
 
 **Previous Work:**
 - Foundation complete (OAuth 2.0 PKCE, HTTP client, formatters)
@@ -294,7 +300,7 @@ These items from specs/09-12 are now in scope:
 
 ## Next Priority
 
-**Phase 5: Direct Messages** - Implement DM functionality:
-1. DM API client with conversation and message endpoints
-2. CLI commands: dm list, dm send, dm view
-3. Pretty output for conversation display
+**Phase 6: Spaces & Media** - Implement Spaces lookup and Media upload:
+1. Spaces API client (lookup, search)
+2. Media upload (simple and chunked)
+3. CLI commands: space, spaces, media upload, media status

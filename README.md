@@ -13,7 +13,7 @@
 
 ## Features
 
-- **Full X API v2** — Posts, timelines, users, lists, engagement
+- **Full X API v2** — Posts, timelines, users, lists, DMs, engagement
 - **OAuth 2.0 PKCE** — Secure authentication, no API keys exposed
 - **Type-safe** — Zod validation on all API responses
 - **Beautiful output** — Pretty terminal formatting or JSON for pipes
@@ -160,6 +160,20 @@ x lists                        # Your lists
 x lists owned                  # Lists you own
 x lists followed               # Lists you follow
 x lists pinned                 # Pinned lists
+```
+
+</details>
+
+<details>
+<summary><strong>Direct Messages</strong></summary>
+
+```bash
+x dm list                      # List conversations
+x dm view <username>           # View conversation with user
+x dm conversation <id>         # View by conversation ID
+x dm send <username> <text>    # Send a DM
+x dm group -u user1 -u user2 <text>  # Create group DM
+x dm delete <event_id>         # Delete a message
 ```
 
 </details>

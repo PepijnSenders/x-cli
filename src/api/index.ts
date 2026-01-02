@@ -61,3 +61,13 @@ export {
   pinList,
   unpinList,
 } from "./lists.js";
+
+export {
+  listConversations,
+  getConversationMessages,
+  getMessagesWithUser,
+  sendMessageToUser,
+  sendMessageToConversation,
+  createGroupDM,
+  deleteDMEvent,
+} from "./dm.js";

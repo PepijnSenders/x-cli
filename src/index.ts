@@ -31,6 +31,7 @@ import {
   createMutesCommand,
   createListCommand,
   createListsCommand,
+  createDMCommand,
 } from "./cli/index.js";
 import { setOutputOptions } from "./output/index.js";
 
@@ -90,6 +91,7 @@ program.addCommand(createUnmuteCommand());
 program.addCommand(createMutesCommand());
 program.addCommand(createListCommand());
 program.addCommand(createListsCommand());
+program.addCommand(createDMCommand());
 
 // Parse and execute
 program.parse();

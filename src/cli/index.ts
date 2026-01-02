@@ -23,3 +23,4 @@ export {
   createMutesCommand,
 } from "./relationships.js";
 export { createListCommand, createListsCommand } from "./list.js";
+export { createDMCommand } from "./dm.js";
