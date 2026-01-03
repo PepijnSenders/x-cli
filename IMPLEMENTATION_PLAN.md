@@ -199,26 +199,26 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Spec Reference:** [specs/01-overview.md](specs/01-overview.md) (Error Handling Strategy section)
 
 ### 6.1 Error Handling
-- [ ] Consistent error response format
-- [ ] "Extension not connected" detection
-- [ ] "No pages available" detection
-- [ ] Rate limit detection (Twitter, LinkedIn)
-- [ ] Login wall detection
-- [ ] Element not found graceful handling
+- [x] Consistent error response format
+- [x] "Extension not connected" detection
+- [x] "No pages available" detection
+- [x] Rate limit detection (Twitter, LinkedIn)
+- [x] Login wall detection
+- [x] Element not found graceful handling
 
 **Verify:** All errors return `{ content: [{ type: "text", text: "Error: ..." }], isError: true }`
 
 ### 6.2 Rate Limiting
-- [ ] Add configurable delays between requests
-- [ ] Respect platform-specific limits
-- [ ] Exponential backoff on rate limit
+- [x] Add configurable delays between requests
+- [x] Respect platform-specific limits
+- [x] Exponential backoff on rate limit
 
 **Verify:** Rapid requests to Twitter show delay between actions; rate limit triggers backoff
 
 ### 6.3 Logging
-- [ ] Debug logging for development
-- [ ] Error logging to stderr
-- [ ] Configurable log level
+- [x] Debug logging for development
+- [x] Error logging to stderr
+- [x] Configurable log level
 
 **Verify:** `DEBUG=session-scraper:* bun run src/index.ts` shows verbose logs to stderr
 
@@ -308,7 +308,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 | 3. Generic Scraping | Complete |
 | 4. Twitter Scraper | Complete |
 | 5. LinkedIn Scraper | Complete |
-| 6. Error Handling | Not Started |
+| 6. Error Handling | Complete |
 | 7. Testing | Not Started |
 | 8. Documentation | Not Started |
 | 9. Publishing | Not Started |

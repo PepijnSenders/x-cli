@@ -6,6 +6,7 @@ import {
   CallToolRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { getPage, getPages, switchPage } from '../browser.js';
+import { formatErrorResponse, debugLog, waitForRateLimit } from '../errors.js';
 import {
   navigate,
   getPageInfo,
@@ -454,6 +455,8 @@ async function handleExecuteScript(args: z.infer<typeof executeScriptSchema>) {
  */
 
 async function handleScrapeTwitterProfile(args: z.infer<typeof scrapeTwitterProfileSchema>) {
+  debugLog('scrape_twitter_profile', args.username);
+  await waitForRateLimit('twitter');
   const page = await getPage();
   const profile = await scrapeTwitterProfile(page, args.username);
 
@@ -468,6 +471,8 @@ async function handleScrapeTwitterProfile(args: z.infer<typeof scrapeTwitterProf
 }
 
 async function handleScrapeTwitterTimeline(args: z.infer<typeof scrapeTwitterTimelineSchema>) {
+  debugLog('scrape_twitter_timeline', args.username, args.count);
+  await waitForRateLimit('twitter');
   const page = await getPage();
   const tweets = await scrapeTwitterTimeline(page, args.username, args.count);
 
@@ -482,6 +487,8 @@ async function handleScrapeTwitterTimeline(args: z.infer<typeof scrapeTwitterTim
 }
 
 async function handleScrapeTwitterPost(args: z.infer<typeof scrapeTwitterPostSchema>) {
+  debugLog('scrape_twitter_post', args.url);
+  await waitForRateLimit('twitter');
   const page = await getPage();
   const tweet = await scrapeTwitterPost(page, args.url);
 
@@ -496,6 +503,8 @@ async function handleScrapeTwitterPost(args: z.infer<typeof scrapeTwitterPostSch
 }
 
 async function handleScrapeTwitterSearch(args: z.infer<typeof scrapeTwitterSearchSchema>) {
+  debugLog('scrape_twitter_search', args.query, args.count);
+  await waitForRateLimit('twitter');
   const page = await getPage();
   const results = await scrapeTwitterSearch(page, args.query, args.count);
 
@@ -514,6 +523,8 @@ async function handleScrapeTwitterSearch(args: z.infer<typeof scrapeTwitterSearc
  */
 
 async function handleScrapeLinkedInProfile(args: z.infer<typeof scrapeLinkedInProfileSchema>) {
+  debugLog('scrape_linkedin_profile', args.url);
+  await waitForRateLimit('linkedin');
   const page = await getPage();
   const profile = await scrapeLinkedInProfile(page, args.url);
 
@@ -528,6 +539,8 @@ async function handleScrapeLinkedInProfile(args: z.infer<typeof scrapeLinkedInPr
 }
 
 async function handleScrapeLinkedInPosts(args: z.infer<typeof scrapeLinkedInPostsSchema>) {
+  debugLog('scrape_linkedin_posts', args.url, args.count);
+  await waitForRateLimit('linkedin');
   const page = await getPage();
   const posts = await scrapeLinkedInPosts(page, args.url, args.count);
 
@@ -542,6 +555,8 @@ async function handleScrapeLinkedInPosts(args: z.infer<typeof scrapeLinkedInPost
 }
 
 async function handleScrapeLinkedInSearch(args: z.infer<typeof scrapeLinkedInSearchSchema>) {
+  debugLog('scrape_linkedin_search', args.query, args.type, args.count);
+  await waitForRateLimit('linkedin');
   const page = await getPage();
   const results = await scrapeLinkedInSearch(page, args.query, args.type, args.count);
 
@@ -622,27 +637,10 @@ export function registerTools(server: Server) {
 
     // Execute handler
     try {
+      debugLog(`Executing tool: ${name}`);
       return await handler(validatedArgs as never);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-
-      // Provide helpful error messages for common issues
-      let userMessage = errorMessage;
-      if (errorMessage.includes('ECONNREFUSED') || errorMessage.includes('connect')) {
-        userMessage = 'Extension not connected. Make sure:\n1. Chrome has the Playwriter extension installed\n2. The extension is enabled (click the icon on a tab)\n3. The relay server is running';
-      } else if (errorMessage.includes('No pages available')) {
-        userMessage = 'No pages available for control. Click the Playwriter extension icon on a Chrome tab to enable it.';
-      }
-
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `Error: ${userMessage}`,
-          },
-        ],
-        isError: true,
-      };
+      return formatErrorResponse(error instanceof Error ? error : String(error));
     }
   });
 }
