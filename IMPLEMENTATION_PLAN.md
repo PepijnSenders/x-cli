@@ -68,7 +68,7 @@ This document tracks the implementation of x-cli based on the spec phases.
 - [x] `x post delete <id>` - delete post
 - [x] `x post reply <id> <text>` - reply to post
 - [x] `x post quote <id> <text>` - quote post
-- [ ] `x post create --media <file>` - post with media attachment
+- [x] `x post create --media <file>` - post with media attachment
 
 ### Timelines
 - [x] `x timeline home` - home timeline
@@ -280,6 +280,12 @@ These items from specs/09-12 are now in scope:
 ---
 
 ## Recent Enhancements
+
+**2025-01-03 (Post with Media):**
+- Added `--media <file>` option to `x post create`
+- Added `--alt <text>` option for media accessibility
+- Integrated media upload with post creation workflow
+- Supports images and videos with auto-processing
 
 **2025-01-03 (Claude Integration):**
 - Created Claude Code skill at .claude/skills/x-cli/

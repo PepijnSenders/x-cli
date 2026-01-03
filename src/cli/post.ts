@@ -1,11 +1,16 @@
 import { Command } from "commander";
+import { access } from "fs/promises";
 import {
   getTweet,
   createTweet,
   deleteTweet,
   replyToTweet,
-  quoteTweet,
 } from "../api/posts.js";
+import {
+  uploadMedia,
+  setMediaAltText,
+  waitForProcessing,
+} from "../api/media.js";
 import {
   output,
   isJsonMode,
@@ -13,8 +18,8 @@ import {
   createSpinner,
   formatTweet,
 } from "../output/index.js";
-import { XCLIError } from "../types/errors.js";
-import type { User } from "../types/index.js";
+import { XCLIError, ValidationError } from "../types/errors.js";
+import type { User, CreateTweetRequest } from "../types/index.js";
 
 /**
  * Create post command group
@@ -29,6 +34,8 @@ export function createPostCommand(): Command {
     .argument("<text>", "Post text (max 280 characters)")
     .option("--reply-to <id>", "Reply to this post ID")
     .option("--quote <id>", "Quote this post ID")
+    .option("--media <file>", "Attach media file (image or video)")
+    .option("--alt <text>", "Alt text for media (accessibility)")
     .action(async (text: string, options) => {
       const spinner = createSpinner("Creating post...");
 
@@ -37,14 +44,85 @@ export function createPostCommand(): Command {
           spinner.start();
         }
 
+        let mediaIds: string[] | undefined;
+
+        // Handle media upload if provided
+        if (options.media) {
+          // Verify file exists
+          try {
+            await access(options.media);
+          } catch {
+            throw new ValidationError(`File not found: ${options.media}`);
+          }
+
+          if (!isJsonMode()) {
+            spinner.text = "Uploading media...";
+          }
+
+          const uploadResult = await uploadMedia(options.media, (percent) => {
+            if (!isJsonMode()) {
+              spinner.text = `Uploading media... ${percent}%`;
+            }
+          });
+
+          const mediaId = uploadResult.media_id_string;
+
+          // Set alt text if provided
+          if (options.alt) {
+            if (!isJsonMode()) {
+              spinner.text = "Setting alt text...";
+            }
+            await setMediaAltText(mediaId, options.alt);
+          }
+
+          // Wait for processing if needed (videos)
+          if (uploadResult.processing_info) {
+            if (!isJsonMode()) {
+              spinner.text = "Processing media...";
+            }
+            await waitForProcessing(mediaId, (state, percent) => {
+              if (!isJsonMode()) {
+                spinner.text = `Processing media: ${state}${percent ? ` ${percent}%` : ""}`;
+              }
+            });
+          }
+
+          mediaIds = [mediaId];
+
+          if (!isJsonMode()) {
+            spinner.text = "Creating post...";
+          }
+        }
+
         let result;
 
         if (options.replyTo) {
-          result = await replyToTweet(options.replyTo, text);
+          // Reply with media
+          const request: CreateTweetRequest = {
+            text,
+            reply: { in_reply_to_tweet_id: options.replyTo },
+          };
+          if (mediaIds) {
+            request.media = { media_ids: mediaIds };
+          }
+          result = await createTweet(request);
         } else if (options.quote) {
-          result = await quoteTweet(options.quote, text);
+          // Quote with media
+          const request: CreateTweetRequest = {
+            text,
+            quote_tweet_id: options.quote,
+          };
+          if (mediaIds) {
+            request.media = { media_ids: mediaIds };
+          }
+          result = await createTweet(request);
         } else {
-          result = await createTweet({ text });
+          // Regular post with optional media
+          const request: CreateTweetRequest = { text };
+          if (mediaIds) {
+            request.media = { media_ids: mediaIds };
+          }
+          result = await createTweet(request);
         }
 
         if (!isJsonMode()) {
