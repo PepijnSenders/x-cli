@@ -59,11 +59,11 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 **Spec**: [specs/04-scrapers.md](specs/04-scrapers.md) (Generic section)
 
 ### 3.1 Page Commands
-- [ ] `page scrape` - Extract text, links, images
-- [ ] `page scrape --selector` - Scoped extraction
-- [ ] `page script` - Execute JavaScript
+- [x] `page scrape` - Extract text, links, images
+- [x] `page scrape --selector` - Scoped extraction
+- [x] `page script` - Execute JavaScript
 
-**Verify**: `session-scraper page scrape` on any page returns structured JSON
+**Verify**: `session-scraper page scrape` on any page returns structured JSON ✓
 
 ---
 
@@ -219,7 +219,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 |-------|--------|
 | 1. Project Setup | ✓ Completed |
 | 2. Browser Connection | ✓ Completed |
-| 3. Generic Scraping | Not Started |
+| 3. Generic Scraping | ✓ Completed |
 | 4. Twitter Scraper | Not Started |
 | 5. LinkedIn Scraper | Not Started |
 | 6. Error Handling | Not Started |

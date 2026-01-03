@@ -411,6 +411,18 @@ export interface Screenshot {
 }
 
 /**
+ * Page script execution result
+ */
+export interface PageScript {
+  /** Script that was executed */
+  script: string;
+  /** Result from script execution (JSON-serializable) */
+  result: unknown;
+  /** Size of result in bytes */
+  size: number;
+}
+
+/**
  * Navigation result
  */
 export interface NavigationResult {
