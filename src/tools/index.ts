@@ -13,6 +13,12 @@ import {
   scrapePage,
   executeScript,
 } from '../scrapers/generic.js';
+import {
+  scrapeTwitterProfile,
+  scrapeTwitterTimeline,
+  scrapeTwitterPost,
+  scrapeTwitterSearch,
+} from '../scrapers/twitter.js';
 
 /**
  * Tool Input Schemas
@@ -439,48 +445,60 @@ async function handleExecuteScript(args: z.infer<typeof executeScriptSchema>) {
 }
 
 /**
- * Tool Handlers - Twitter Tools (Phase 4) - Stubs
+ * Tool Handlers - Twitter Tools (Phase 4)
  */
 
 async function handleScrapeTwitterProfile(args: z.infer<typeof scrapeTwitterProfileSchema>) {
+  const page = await getPage();
+  const profile = await scrapeTwitterProfile(page, args.username);
+
   return {
     content: [
       {
         type: 'text',
-        text: `Not implemented yet: scrape Twitter profile @${args.username}`,
+        text: JSON.stringify(profile, null, 2),
       },
     ],
   };
 }
 
 async function handleScrapeTwitterTimeline(args: z.infer<typeof scrapeTwitterTimelineSchema>) {
+  const page = await getPage();
+  const tweets = await scrapeTwitterTimeline(page, args.username, args.count);
+
   return {
     content: [
       {
         type: 'text',
-        text: `Not implemented yet: scrape Twitter timeline${args.username ? ` for @${args.username}` : ''} (count: ${args.count ?? 20})`,
+        text: JSON.stringify({ tweets, count: tweets.length }, null, 2),
       },
     ],
   };
 }
 
 async function handleScrapeTwitterPost(args: z.infer<typeof scrapeTwitterPostSchema>) {
+  const page = await getPage();
+  const tweet = await scrapeTwitterPost(page, args.url);
+
   return {
     content: [
       {
         type: 'text',
-        text: `Not implemented yet: scrape Twitter post ${args.url}`,
+        text: JSON.stringify(tweet, null, 2),
       },
     ],
   };
 }
 
 async function handleScrapeTwitterSearch(args: z.infer<typeof scrapeTwitterSearchSchema>) {
+  const page = await getPage();
+  const results = await scrapeTwitterSearch(page, args.query, args.count);
+
   return {
     content: [
       {
         type: 'text',
-        text: `Not implemented yet: search Twitter for "${args.query}" (count: ${args.count ?? 20})`,
+        text: JSON.stringify(results, null, 2),
       },
     ],
   };

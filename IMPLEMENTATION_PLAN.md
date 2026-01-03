@@ -121,7 +121,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Spec Reference:** [specs/03-twitter-scraper.md](specs/03-twitter-scraper.md)
 
 ### 4.1 Profile Scraping
-- [ ] `scrape_twitter_profile` - Get user profile info
+- [x] `scrape_twitter_profile` - Get user profile info
   - Input: `{ username: string }`
   - Output: Profile object (see specs/03-twitter-scraper.md)
   - Navigate to `https://x.com/{username}`
@@ -131,7 +131,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Verify:** `scrape_twitter_profile` for `elonmusk` returns object with `username`, `displayName`, `followersCount` > 0
 
 ### 4.2 Timeline Scraping
-- [ ] `scrape_twitter_timeline` - Get tweets from timeline
+- [x] `scrape_twitter_timeline` - Get tweets from timeline
   - Input: `{ username?: string, count?: number }`
   - Output: `{ tweets: [...], hasMore }`
   - User timeline if username provided, else home
@@ -142,7 +142,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Verify:** `scrape_twitter_timeline` with `count: 5` returns exactly 5 tweets with `id`, `text`, `metrics`
 
 ### 4.3 Post Scraping
-- [ ] `scrape_twitter_post` - Get single tweet + thread
+- [x] `scrape_twitter_post` - Get single tweet + thread
   - Input: `{ url: string }`
   - Output: `{ tweet, thread, replies }`
   - Extract thread context if reply
@@ -151,7 +151,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Verify:** `scrape_twitter_post` with valid tweet URL returns `tweet` object with `text` and `metrics`
 
 ### 4.4 Search
-- [ ] `scrape_twitter_search` - Search tweets
+- [x] `scrape_twitter_search` - Search tweets
   - Input: `{ query: string, count?: number }`
   - Output: Same as timeline
   - Click "Latest" tab for chronological
@@ -306,7 +306,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 | 1. Foundation | Complete |
 | 2. Browser Tools | Complete |
 | 3. Generic Scraping | Complete |
-| 4. Twitter Scraper | Not Started |
+| 4. Twitter Scraper | Complete |
 | 5. LinkedIn Scraper | Not Started |
 | 6. Error Handling | Not Started |
 | 7. Testing | Not Started |
