@@ -106,25 +106,25 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 **Spec**: [specs/04-scrapers.md](specs/04-scrapers.md) (LinkedIn section)
 
 ### 5.1 Profile
-- [ ] `linkedin profile <url>`
-- [ ] Extract experience, education, skills
-- [ ] Handle "see more" expansion
-- [ ] Human-like delays
+- [x] `linkedin profile <url>`
+- [x] Extract experience, education, skills
+- [x] Handle "see more" expansion
+- [x] Human-like delays
 
-**Verify**: `session-scraper linkedin profile <url>` returns profile JSON
+**Verify**: `session-scraper linkedin profile <url>` returns profile JSON ✓
 
 ### 5.2 Posts
-- [ ] `linkedin posts <url>`
-- [ ] `--count` option
+- [x] `linkedin posts <url>`
+- [x] `--count` option
 
-**Verify**: `session-scraper linkedin posts <url>` returns posts
+**Verify**: `session-scraper linkedin posts <url>` returns posts ✓
 
 ### 5.3 Search
-- [ ] `linkedin search <query>`
-- [ ] `--type` option (people, posts, companies)
-- [ ] `--count` option
+- [x] `linkedin search <query>`
+- [x] `--type` option (people, posts, companies)
+- [x] `--count` option
 
-**Verify**: `session-scraper linkedin search "engineer"` returns results
+**Verify**: `session-scraper linkedin search "engineer"` returns results ✓
 
 ---
 
@@ -221,7 +221,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 2. Browser Connection | ✓ Completed |
 | 3. Generic Scraping | ✓ Completed |
 | 4. Twitter Scraper | ✓ Completed |
-| 5. LinkedIn Scraper | Not Started |
+| 5. LinkedIn Scraper | ✓ Completed |
 | 6. Error Handling | Not Started |
 | 7. Skill Definition | Not Started |
 | 8. Testing | Not Started |

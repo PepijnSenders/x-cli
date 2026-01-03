@@ -91,6 +91,10 @@ export function checkLinkedInErrors(content: string): ErrorType | null {
     return 'not_found';
   }
 
+  if (lower.includes('account suspended')) {
+    return 'suspended';
+  }
+
   if (lower.includes('unusual activity') || lower.includes('restricted')) {
     return 'rate_limited';
   }
