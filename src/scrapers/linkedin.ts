@@ -21,9 +21,6 @@ import {
   waitForElement as commonWaitForElement
 } from './common.js';
 
-// Re-export parseLinkedInDuration for convenience
-export { parseTwitterNumber };
-
 // Re-export common utilities for backwards compatibility
 export const humanDelay = commonHumanDelay;
 export const waitForElement = commonWaitForElement;

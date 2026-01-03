@@ -207,15 +207,114 @@ export async function extractImages(page: Page): Promise<PageImage[]> {
 /**
  * Scrape content from a page with optional selector.
  *
- * Backward compatibility alias for extractPageContent.
- * Note: selector parameter is ignored as extractPageContent uses automatic content detection.
+ * If selector is provided, extracts content from that element only.
+ * Otherwise uses automatic content detection (main > article > [role="main"] > body).
  *
  * @param page - Playwright Page object
- * @param _selector - Optional CSS selector (ignored, kept for compatibility)
+ * @param selector - Optional CSS selector to scope extraction
  * @returns PageContent with extracted data
- * @deprecated Use extractPageContent instead
  */
-export async function scrapePage(page: Page, _selector?: string): Promise<PageContent> {
-  // Selector is ignored - we always use automatic content detection (main > article > [role="main"] > body)
-  return extractPageContent(page);
+export async function scrapePage(page: Page, selector?: string): Promise<PageContent> {
+  // If no selector provided, use automatic content detection
+  if (!selector) {
+    return extractPageContent(page);
+  }
+
+  // Extract from specific selector
+  const url = page.url();
+  const title = await page.title();
+
+  // Check if element exists
+  const elementExists = await page.locator(selector).count();
+  if (elementExists === 0) {
+    throw new Error(`Element not found: ${selector}`);
+  }
+
+  // Extract content from selected element
+  const extracted = await page.evaluate((sel) => {
+    // Helper: Extract text
+    function extractText(element: Element): string {
+      const style = window.getComputedStyle(element);
+      if (style.display === 'none' || style.visibility === 'hidden') {
+        return '';
+      }
+
+      if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) {
+        return '';
+      }
+
+      return element.textContent?.trim() || '';
+    }
+
+    // Helper: Extract links
+    function extractLinks(root: Element): Array<{ text: string; href: string }> {
+      const seen = new Set<string>();
+      const links: Array<{ text: string; href: string }> = [];
+
+      for (const anchor of root.querySelectorAll('a[href]')) {
+        const href = (anchor as HTMLAnchorElement).href;
+        if (!href || !href.startsWith('http') || seen.has(href)) {
+          continue;
+        }
+
+        seen.add(href);
+        links.push({
+          text: anchor.textContent?.trim() || '',
+          href
+        });
+
+        if (links.length >= 100) break; // Max 100 links
+      }
+
+      return links;
+    }
+
+    // Helper: Extract images
+    function extractImages(root: Element): Array<{ alt: string; src: string }> {
+      const seen = new Set<string>();
+      const images: Array<{ alt: string; src: string }> = [];
+
+      for (const img of root.querySelectorAll('img[src]')) {
+        const src = (img as HTMLImageElement).src;
+        if (!src || !src.startsWith('http') || seen.has(src)) {
+          continue;
+        }
+
+        seen.add(src);
+        images.push({
+          alt: (img as HTMLImageElement).alt || '',
+          src
+        });
+
+        if (images.length >= 50) break; // Max 50 images
+      }
+
+      return images;
+    }
+
+    // Get the selected element
+    const element = document.querySelector(sel);
+    if (!element) {
+      throw new Error(`Element not found: ${sel}`);
+    }
+
+    // Extract with limits
+    let text = extractText(element);
+    if (text.length > 100000) {
+      text = text.slice(0, 100000); // Max 100,000 chars
+    }
+
+    const links = extractLinks(element);
+    const images = extractImages(element);
+
+    return { text, links, images };
+  }, selector);
+
+  return {
+    url,
+    title,
+    text: extracted.text,
+    links: extracted.links,
+    images: extracted.images
+  };
 }

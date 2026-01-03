@@ -311,6 +311,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 14. Advanced Features | ✓ Completed |
 | 15. Enhanced Twitter Metrics | ✓ Completed |
 | 16. Twitter Lists Support | ✓ Completed |
+| 17. Code Quality Fixes | ✓ Completed |
 
 ---
 
@@ -516,6 +517,41 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 - Banner image extraction when present
 
 **Verify**: Twitter Lists support fully implemented and tested ✓
+
+---
+
+## Phase 17: Code Quality Fixes
+
+### 17.1 Critical Bug Fixes
+- [x] Fix redundant export in linkedin.ts causing TypeScript conflict
+- [x] Remove duplicate parseLinkedInDuration export statement
+- [x] Verify no export conflicts remain
+
+**Impact**: Resolved TypeScript compilation errors from duplicate exports.
+
+### 17.2 Thread Detection Implementation Fix
+- [x] Fix Twitter thread detection - populate isThread field correctly
+- [x] Replace inline type detection with comprehensive detectTweetType function
+- [x] Use detected 'thread' type to set isThread field (previously hardcoded to false)
+- [x] Ensure thread indicators are properly recognized in tweet extraction
+
+**Impact**: Thread detection now works end-to-end, properly identifying threads vs replies vs original tweets.
+
+### 17.3 Generic Page Scraper - Selector Support
+- [x] Implement selector parameter support in scrapePage function
+- [x] Add element existence validation before extraction
+- [x] Extract text, links, and images from selected element when selector provided
+- [x] Maintain backward compatibility with automatic content detection
+- [x] Update JSDoc to accurately reflect selector functionality
+
+**Impact**: MCP tool scrape_page now properly supports optional selector parameter as documented.
+
+### 17.4 Verification
+- [x] All typechecks pass with `bun run typecheck`
+- [x] All 187 tests pass with `bun test`
+- [x] No regressions in existing functionality
+
+**Verify**: All code quality fixes complete and verified ✓
 
 ---
 

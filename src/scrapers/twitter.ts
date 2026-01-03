@@ -573,18 +573,10 @@ export async function extractTweets(page: Page): Promise<TwitterTweet[]> {
           ...(quotes !== undefined && { quotes })
         };
 
-        // Detect tweet type
-        let type: 'original' | 'retweet' | 'reply' = 'original';
+        // Detect tweet type using the comprehensive detection function
+        const type = detectTweetType(article, text, username);
 
-        // Check for retweet indicator
-        const socialContext = article.querySelector('[data-testid="socialContext"]');
-        if (socialContext?.textContent?.toLowerCase().includes('repost')) {
-          type = 'retweet';
-        }
-        // Check for reply indicator
-        else if (article.textContent?.includes('Replying to')) {
-          type = 'reply';
-        }        // Extract media
+        // Extract media
         const media: Array<{ type: 'photo' | 'video' | 'gif'; url: string; thumbnailUrl?: string; alt?: string }> = [];
 
         // Extract photos
@@ -635,7 +627,7 @@ export async function extractTweets(page: Page): Promise<TwitterTweet[]> {
           type,
           media,
           url,
-          isThread: false
+          isThread: type === 'thread'
         });
       } catch (err) {
         // Skip tweets that fail to parse
