@@ -3,6 +3,7 @@ import { formatJSON, printJSON, formatJSONError, printJSONError } from "./json.j
 import {
   formatTweet,
   formatUserProfile,
+  formatUserList,
   formatError,
   printSuccess,
   printWarning,
@@ -25,6 +26,7 @@ export {
   // Pretty formatters
   formatTweet,
   formatUserProfile,
+  formatUserList,
   formatError,
   printSuccess,
   printWarning,

@@ -17,35 +17,9 @@ import {
   isJsonMode,
   printError,
   createSpinner,
-  formatNumber,
-  formatUsername,
-  createTable,
+  formatUserList,
 } from "../output/index.js";
 import { XCLIError } from "../types/errors.js";
-import type { User } from "../types/index.js";
-
-/**
- * Format user list for pretty output
- */
-function formatUserList(users: User[]): string {
-  if (users.length === 0) {
-    return "No users found";
-  }
-
-  const table = createTable({
-    head: ["Username", "Name", "Followers"],
-  });
-
-  for (const user of users) {
-    table.push([
-      formatUsername(user),
-      user.name,
-      user.public_metrics ? formatNumber(user.public_metrics.followers_count) : "-",
-    ]);
-  }
-
-  return table.toString();
-}
 
 /**
  * Create follow command

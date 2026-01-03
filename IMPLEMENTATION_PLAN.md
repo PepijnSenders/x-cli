@@ -98,8 +98,8 @@ This document tracks the implementation of x-cli based on the spec phases.
 ### User Lookup
 - [x] `x user <username>` - lookup by username
 - [x] `x me` - current authenticated user
-- [ ] `x user --id <id>` - lookup by ID
-- [ ] `x user search <query>` - search users
+- [x] `x user --id <id>` - lookup by ID
+- [x] `x user search <query>` - search users (via tweet search)
 
 ### Following
 - [x] `x follow <username>` - follow user
@@ -280,6 +280,11 @@ These items from specs/09-12 are now in scope:
 ---
 
 ## Recent Enhancements
+
+**2025-01-03 (User Lookup & Search):**
+- Added `--id` option to `x user` for lookup by user ID
+- Added `x user search <query>` command (extracts users from tweet search)
+- Refactored formatUserList to shared output module
 
 **2025-01-03 (Post with Media):**
 - Added `--media <file>` option to `x post create`
