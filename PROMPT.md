@@ -1,4 +1,3 @@
-```
 0a. familiarize yourself with @specs/
 
 0b. familiarize yourself with the code in @src/
@@ -8,4 +7,3 @@
 2. ensure all tests and linting passes with `bun run typecheck && bun test`, then update IMPLEMENTATION_PLAN.md with your progress
 
 3. use `git add -A` and `git commit -m "..."` to commit your changes - do not include any claude attribution
-```
