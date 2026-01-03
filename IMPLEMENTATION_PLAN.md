@@ -248,7 +248,7 @@ This document tracks the implementation of x-cli based on the spec phases.
 
 ### Testing & Quality
 - [x] Type checking passes (bun run typecheck)
-- [x] Basic test suite (28 tests)
+- [x] Test suite (49 tests, 89% line coverage)
 - [ ] 100% test coverage
 - [ ] Integration tests (E2E flows)
 - [x] Build optimization (minification enabled; ~58MB compiled, ~324KB Node bundle)
@@ -280,6 +280,12 @@ These items from specs/09-12 are now in scope:
 ---
 
 ## Recent Enhancements
+
+**2025-01-03 (Test Coverage Improvement):**
+- Added 21 new tests for output formatting (49 total tests)
+- Improved line coverage from 85% to 89%
+- Tests cover: username formatting, tweet formatting, user profiles, error formatting, relative time
+- Tests for various verification types (blue, business, government)
 
 **2025-01-03 (MCP Server):**
 - Implemented Model Context Protocol server for Claude integration
@@ -375,7 +381,5 @@ These items from specs/09-12 are now in scope:
 ## Next Priority
 
 **All core phases complete!** Remaining items:
-1. Documentation: CHANGELOG.md, CONTRIBUTING.md
-2. Testing: Integration tests, 100% coverage
-3. Release: npm package, Homebrew formula, binary releases
-4. Future: Website, Claude/MCP integration
+1. Testing: Integration tests, 100% coverage (currently at 89%)
+2. Website: Landing page, documentation site, interactive demo

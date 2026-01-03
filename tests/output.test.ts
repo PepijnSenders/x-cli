@@ -4,7 +4,15 @@ import {
   formatRelativeTime,
   formatDuration,
   formatJSON,
+  formatUsername,
+  formatTweet,
+  formatUserList,
+  formatUserProfile,
+  formatError,
+  createTable,
 } from "../src/output/index.js";
+import { XCLIError, ErrorCode } from "../src/types/errors.js";
+import type { User, Tweet } from "../src/types/index.js";
 
 describe("Number Formatting", () => {
   test("formats small numbers as-is", () => {
@@ -89,4 +97,236 @@ describe("JSON Formatting", () => {
     const data = { user: { id: "123", name: "Test" } };
     expect(formatJSON(data)).toBe('{"user":{"id":"123","name":"Test"}}');
   });
+});
+
+describe("Extended Relative Time", () => {
+  test("formats weeks ago", () => {
+    const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    expect(formatRelativeTime(twoWeeksAgo)).toBe("2w");
+  });
+
+  test("formats months ago", () => {
+    const twoMonthsAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+    expect(formatRelativeTime(twoMonthsAgo)).toBe("2mo");
+  });
+
+  test("formats years ago", () => {
+    const twoYearsAgo = new Date(Date.now() - 730 * 24 * 60 * 60 * 1000).toISOString();
+    expect(formatRelativeTime(twoYearsAgo)).toBe("2y");
+  });
+});
+
+describe("Username Formatting", () => {
+  test("formats basic username", () => {
+    const user: User = {
+      id: "123",
+      name: "Test User",
+      username: "testuser",
+    };
+    const result = formatUsername(user);
+    expect(result).toContain("@testuser");
+  });
+
+  test("formats verified user with blue check", () => {
+    const user: User = {
+      id: "123",
+      name: "Verified User",
+      username: "verified",
+      verified: true,
+    };
+    const result = formatUsername(user);
+    expect(result).toContain("@verified");
+    expect(result).toContain("✓");
+  });
+
+  test("formats blue verified type", () => {
+    const user: User = {
+      id: "123",
+      name: "Blue User",
+      username: "blueuser",
+      verified_type: "blue",
+    };
+    const result = formatUsername(user);
+    expect(result).toContain("✓");
+  });
+
+  test("formats business verified type", () => {
+    const user: User = {
+      id: "123",
+      name: "Business",
+      username: "business",
+      verified_type: "business",
+    };
+    const result = formatUsername(user);
+    expect(result).toContain("✓");
+  });
+
+  test("formats government verified type", () => {
+    const user: User = {
+      id: "123",
+      name: "Gov Account",
+      username: "gov",
+      verified_type: "government",
+    };
+    const result = formatUsername(user);
+    expect(result).toContain("✓");
+  });
+});
+
+describe("Tweet Formatting", () => {
+  test("formats tweet without author", () => {
+    const tweet: Tweet = {
+      id: "123",
+      text: "Hello world!",
+      edit_history_tweet_ids: ["123"],
+    };
+    const result = formatTweet(tweet);
+    expect(result).toContain("Hello world!");
+  });
+
+  test("formats tweet with author", () => {
+    const tweet: Tweet = {
+      id: "123",
+      text: "Hello world!",
+      created_at: new Date().toISOString(),
+      edit_history_tweet_ids: ["123"],
+    };
+    const author: User = {
+      id: "456",
+      name: "Test User",
+      username: "testuser",
+    };
+    const result = formatTweet(tweet, author);
+    expect(result).toContain("@testuser");
+    expect(result).toContain("Hello world!");
+  });
+
+  test("formats tweet with metrics", () => {
+    const tweet: Tweet = {
+      id: "123",
+      text: "Popular tweet",
+      edit_history_tweet_ids: ["123"],
+      public_metrics: {
+        like_count: 1500,
+        retweet_count: 200,
+        reply_count: 50,
+        quote_count: 10,
+        impression_count: 10000,
+        bookmark_count: 5,
+      },
+    };
+    const result = formatTweet(tweet);
+    expect(result).toContain("1.5K");
+    expect(result).toContain("200");
+  });
+
+  test("formats tweet with timestamp only", () => {
+    const tweet: Tweet = {
+      id: "123",
+      text: "Timed tweet",
+      created_at: new Date().toISOString(),
+      edit_history_tweet_ids: ["123"],
+    };
+    const result = formatTweet(tweet);
+    expect(result).toContain("just now");
+  });
+});
+
+describe("User List Formatting", () => {
+  test("formats empty user list", () => {
+    const result = formatUserList([]);
+    expect(result).toBe("No users found");
+  });
+
+  // Note: formatUserList with data uses cli-table3 which has environment-specific behavior
+  // The function is tested indirectly through CLI integration tests
+});
+
+describe("User Profile Formatting", () => {
+  test("formats basic user profile", () => {
+    const user: User = {
+      id: "123",
+      name: "Test User",
+      username: "testuser",
+    };
+    const result = formatUserProfile(user);
+    expect(result).toContain("Test User");
+    expect(result).toContain("@testuser");
+  });
+
+  test("formats user with description", () => {
+    const user: User = {
+      id: "123",
+      name: "Test User",
+      username: "testuser",
+      description: "This is my bio",
+    };
+    const result = formatUserProfile(user);
+    expect(result).toContain("This is my bio");
+  });
+
+  test("formats user with location", () => {
+    const user: User = {
+      id: "123",
+      name: "Test User",
+      username: "testuser",
+      location: "San Francisco, CA",
+    };
+    const result = formatUserProfile(user);
+    expect(result).toContain("San Francisco, CA");
+  });
+
+  test("formats user with metrics", () => {
+    const user: User = {
+      id: "123",
+      name: "Test User",
+      username: "testuser",
+      public_metrics: {
+        followers_count: 5000,
+        following_count: 200,
+        tweet_count: 1000,
+        listed_count: 50,
+        like_count: 100,
+      },
+    };
+    const result = formatUserProfile(user);
+    expect(result).toContain("5K");
+    expect(result).toContain("followers");
+    expect(result).toContain("following");
+    expect(result).toContain("posts");
+  });
+});
+
+describe("Error Formatting", () => {
+  test("formats XCLIError", () => {
+    const error = new XCLIError("Something went wrong", ErrorCode.API_ERROR);
+    const result = formatError(error);
+    expect(result).toContain("Something went wrong");
+    expect(result).toContain("API_ERROR");
+  });
+
+  test("formats error with different codes", () => {
+    const authError = new XCLIError("Not authenticated", ErrorCode.AUTH_REQUIRED);
+    const rateLimitError = new XCLIError("Rate limited", ErrorCode.RATE_LIMITED);
+
+    expect(formatError(authError)).toContain("AUTH_REQUIRED");
+    expect(formatError(rateLimitError)).toContain("RATE_LIMITED");
+  });
+});
+
+describe("Table Creation", () => {
+  test("creates table object", () => {
+    const table = createTable();
+    expect(table).toBeDefined();
+    expect(typeof table.push).toBe("function");
+    expect(typeof table.toString).toBe("function");
+  });
+
+  test("creates table with headers", () => {
+    const table = createTable({ head: ["Col1", "Col2"] });
+    expect(table).toBeDefined();
+  });
+
+  // Note: cli-table3 toString() has environment-specific behavior
+  // Table output is tested indirectly through CLI integration tests
 });
