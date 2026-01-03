@@ -10,8 +10,9 @@ import {
   formatUserProfile,
   formatError,
   createTable,
+  formatJSONError,
 } from "../src/output/index.js";
-import { XCLIError, ErrorCode } from "../src/types/errors.js";
+import { XCLIError, ErrorCode, APIError, ValidationError } from "../src/types/errors.js";
 import type { User, Tweet } from "../src/types/index.js";
 
 describe("Number Formatting", () => {
@@ -96,6 +97,28 @@ describe("JSON Formatting", () => {
   test("formats nested objects", () => {
     const data = { user: { id: "123", name: "Test" } };
     expect(formatJSON(data)).toBe('{"user":{"id":"123","name":"Test"}}');
+  });
+
+  test("formats XCLIError to JSON string", () => {
+    const error = new XCLIError("Test error", ErrorCode.API_ERROR);
+    const result = formatJSONError(error);
+    expect(result).toBe('{"error":"Test error","code":"API_ERROR"}');
+  });
+
+  test("formats APIError to JSON string", () => {
+    const error = new APIError("API failed");
+    const result = formatJSONError(error);
+    const parsed = JSON.parse(result);
+    expect(parsed.error).toBe("API failed");
+    expect(parsed.code).toBe("API_ERROR");
+  });
+
+  test("formats ValidationError to JSON string", () => {
+    const error = new ValidationError("Invalid input");
+    const result = formatJSONError(error);
+    const parsed = JSON.parse(result);
+    expect(parsed.error).toBe("Invalid input");
+    expect(parsed.code).toBe("VALIDATION");
   });
 });
 

@@ -248,7 +248,7 @@ This document tracks the implementation of x-cli based on the spec phases.
 
 ### Testing & Quality
 - [x] Type checking passes (bun run typecheck)
-- [x] Test suite (49 tests, 89% line coverage)
+- [x] Test suite (75 tests, 92% line coverage)
 - [ ] 100% test coverage
 - [ ] Integration tests (E2E flows)
 - [x] Build optimization (minification enabled; ~58MB compiled, ~324KB Node bundle)
@@ -281,7 +281,13 @@ These items from specs/09-12 are now in scope:
 
 ## Recent Enhancements
 
-**2025-01-03 (Test Coverage Improvement):**
+**2025-01-03 (Test Coverage - 92%):**
+- Added 26 new tests for error classes and JSON formatting (75 total tests)
+- Improved line coverage from 89% to 92%
+- Error types now at 100% coverage (XCLIError, AuthError, RateLimitError, APIError, ValidationError, ConfigError, NetworkError)
+- JSON formatting tests for formatJSONError
+
+**2025-01-03 (Test Coverage - 89%):**
 - Added 21 new tests for output formatting (49 total tests)
 - Improved line coverage from 85% to 89%
 - Tests cover: username formatting, tweet formatting, user profiles, error formatting, relative time
@@ -381,5 +387,5 @@ These items from specs/09-12 are now in scope:
 ## Next Priority
 
 **All core phases complete!** Remaining items:
-1. Testing: Integration tests, 100% coverage (currently at 89%)
+1. Testing: Integration tests, 100% coverage (currently at 92%)
 2. Website: Landing page, documentation site, interactive demo
