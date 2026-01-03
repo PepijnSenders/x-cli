@@ -82,6 +82,7 @@ The MCP server provides these tools:
 - `scrape_twitter_timeline`
 - `scrape_twitter_post`
 - `scrape_twitter_search`
+- `scrape_twitter_list`
 - `scrape_linkedin_profile`
 - `scrape_linkedin_posts`
 - `scrape_linkedin_search`
@@ -116,6 +117,7 @@ npx @pep/session-scraper-mcp twitter profile elonmusk
 | `twitter timeline [username]` | Get tweets from user/home |
 | `twitter post <url>` | Get single tweet + thread |
 | `twitter search <query>` | Search tweets |
+| `twitter list <list-id>` | Get Twitter list + tweets |
 
 ### LinkedIn
 
@@ -182,6 +184,21 @@ Search Twitter for tweets matching a query.
 |-----------|------|----------|-------------|
 | `query` | string | Yes | Search query (supports Twitter operators) |
 | `count` | number | No | Number of results (default: 20, max: 100) |
+
+#### `scrape_twitter_list`
+Get Twitter list information and tweets from list members.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `listId` | string | Yes | Twitter list ID (numeric) |
+| `count` | number | No | Number of tweets (default: 20, max: 100) |
+
+**Example:**
+```json
+{ "listId": "1234567890" }
+```
+
+**Returns:** List object with metadata (`name`, `description`, `owner`, `memberCount`, `followerCount`, `isPrivate`, etc.) and array of tweets from list members.
 
 ### LinkedIn Tools
 

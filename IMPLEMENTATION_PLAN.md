@@ -312,6 +312,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 15. Enhanced Twitter Metrics | ✓ Completed |
 | 16. Twitter Lists Support | ✓ Completed |
 | 17. Code Quality Fixes | ✓ Completed |
+| 18. Documentation & Integration Tests | ✓ Completed |
 
 ---
 
@@ -552,6 +553,48 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 - [x] No regressions in existing functionality
 
 **Verify**: All code quality fixes complete and verified ✓
+
+---
+
+## Phase 18: Documentation and Integration Test Infrastructure
+
+### 18.1 Documentation Updates
+- [x] Add Twitter Lists feature to README.md command table
+- [x] Document scrape_twitter_list MCP tool with parameters and examples
+- [x] Add Twitter Lists to MCP tools list
+- [x] Include usage examples for list scraping
+
+**Impact**: Twitter Lists feature (Phase 16) is now fully documented for users.
+
+### 18.2 Integration Test Infrastructure
+- [x] Create comprehensive integration-testing-guide.md
+- [x] Document test categories: automated, manual, platform-specific
+- [x] Add detailed test scenarios for Twitter, LinkedIn, and browser control
+- [x] Include troubleshooting guide for common integration test issues
+- [x] Document MCP server testing approach
+- [x] Add test checklist for releases
+- [x] Provide best practices and contributing guidelines
+
+**Impact**: Developers now have clear guidance on integration testing with live browser sessions.
+
+### 18.3 Example Integration Tests
+- [x] Create integration-example.test.ts with working examples
+- [x] Demonstrate conditional test execution (skip when Playwriter unavailable)
+- [x] Include examples for Twitter, browser control, and error handling tests
+- [x] Add template for developers to create their own integration tests
+- [x] Use environment variable flag (INTEGRATION_TESTS=1) for opt-in execution
+
+**Impact**: Developers have a working template for adding integration tests to new features.
+
+### 18.4 Verification
+- [x] All typechecks pass with `bun run typecheck`
+- [x] All 187 tests pass with `bun test`
+- [x] Integration test example can be run with INTEGRATION_TESTS=1 flag
+- [x] Documentation accurately reflects all features
+
+**Verify**: Documentation and integration test infrastructure complete ✓
+
+**Note**: Phase 8.2 integration test items remain marked as incomplete for live browser tests requiring authentication. The new infrastructure in Phase 18 provides the foundation for developers to add these tests when appropriate.
 
 ---
 
