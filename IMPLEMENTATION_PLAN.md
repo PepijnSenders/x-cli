@@ -276,9 +276,9 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Spec Reference:** [specs/07-publishing.md](specs/07-publishing.md)
 
 ### 9.1 npm Publishing
-- [ ] Setup npm publish workflow
-- [ ] Ensure shebang in built output
-- [ ] Test `npx @pep/session-scraper-mcp`
+- [x] Setup npm publish workflow
+- [x] Ensure shebang in built output
+- [x] Test `npx @pep/session-scraper-mcp`
 
 **Verify:** `npx @pep/session-scraper-mcp` starts MCP server without error
 
@@ -291,9 +291,9 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Verify:** `/plugin install session-scraper` works in Claude Code
 
 ### 9.3 CI/CD
-- [ ] CI workflow (test, typecheck, build)
-- [ ] Publish workflow on release
-- [ ] Version management
+- [x] CI workflow (test, typecheck, build)
+- [x] Publish workflow on release
+- [x] Version management
 
 **Verify:** GitHub Actions pass on PR; release publishes to npm automatically
 
@@ -311,7 +311,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 | 6. Error Handling | Complete |
 | 7. Testing | Complete |
 | 8. Documentation | Complete |
-| 9. Publishing | Not Started |
+| 9. Publishing | Complete |
 | 10. Additional Scrapers | Not Started |
 | 11. Advanced Features | Not Started |
 
