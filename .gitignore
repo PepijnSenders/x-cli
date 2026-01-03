@@ -40,3 +40,4 @@ coverage/
 package-lock.json
 yarn.lock
 bun.lockb
+dist-node/
