@@ -308,6 +308,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 11. Documentation Polish | ✓ Completed |
 | 12. Feature Enhancements | ✓ Completed |
 | 13. Code Quality Improvements | ✓ Completed |
+| 14. Advanced Features | ✓ Completed |
 
 ---
 
@@ -372,30 +373,101 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 
 ---
 
+## Phase 14: Advanced Features
+
+### 14.1 Browser Connection Enhancements
+- [x] Implement retry logic with exponential backoff for CDP connections
+- [x] Add connection timeout handling (30s timeout)
+- [x] Add withRetry helper function with configurable retry strategy
+- [x] Add timeout wrapper function (withTimeout)
+- [x] Improve error messages with retry count and helpful hints
+- [x] Add error classification functions (isConnectionRefusedError, isTimeoutError)
+
+**Impact**: More robust browser connection handling with automatic retries for transient failures.
+
+### 14.2 Twitter Thread Detection
+- [x] Add detectThreadIndicators function to identify thread patterns
+- [x] Support multiple thread numbering formats: "1/5", "1/ ", "(1/5)", "1.5"
+- [x] Detect thread keyword ("Thread:", "THREAD:") and emoji (🧵)
+- [x] Add DOM-based thread indicators ("Show this thread", thread cards)
+- [x] Enhance detectTweetType to distinguish threads from replies
+- [x] Identify self-replies as thread continuations
+- [x] Add 'thread' type to TwitterTweetType union
+- [x] Update tweet extraction to use enhanced type detection
+
+**Impact**: Better thread context awareness for Twitter scraping, enabling proper thread vs reply distinction.
+
+### 14.3 Enhanced Media Extraction
+- [x] Extract video media in addition to photos
+- [x] Extract GIF media (detected via autoplay/loop/muted attributes)
+- [x] Add thumbnailUrl field to TwitterMedia type for video thumbnails
+- [x] Extract poster images for videos
+- [x] Properly classify media types (photo, video, gif)
+
+**Impact**: Complete media extraction including videos and GIFs, with proper thumbnails.
+
+### 14.4 Code Organization & Refactoring
+- [x] Create src/scrapers/common.ts for shared utilities
+- [x] Extract humanDelay function to common module
+- [x] Extract scrollForMore function to common module
+- [x] Extract waitForElement function to common module
+- [x] Update LinkedIn scraper to use common utilities
+- [x] Keep Twitter's custom scrollForMore for tweet-specific verification
+- [x] Add comprehensive JSDoc documentation to common utilities
+
+**Impact**: Better code reuse and maintainability across scrapers.
+
+### 14.5 Enhanced Testing
+- [x] Add tests/browser.test.ts for retry logic (7 test cases)
+- [x] Add tests/thread-detection.test.ts for thread detection (33 test cases)
+- [x] Install and configure happy-dom for DOM testing
+- [x] Test exponential backoff behavior
+- [x] Test thread pattern detection (numbered, keyword, emoji)
+- [x] Test tweet type classification (original, reply, thread, retweet)
+- [x] Test edge cases and type hierarchy
+- [x] All 187 tests passing
+
+**Verify**: All advanced features implemented and tested ✓
+
+**Test Results**:
+- Browser connection retry tests: 7/7 passing
+- Thread detection tests: 33/33 passing
+- Total tests: 187 passing, 0 failing
+
+---
+
 ## Project Structure
 
 ```
 session-scraper/
 ├── src/
 │   ├── cli.ts              # CLI entry point (Commander.js)
-│   ├── browser.ts          # Playwriter connection
+│   ├── browser.ts          # Playwriter connection (with retry logic)
+│   ├── mcp-server.ts       # MCP server entry point
 │   ├── commands/
 │   │   ├── twitter.ts      # Twitter subcommands
 │   │   ├── linkedin.ts     # LinkedIn subcommands
 │   │   ├── browser.ts      # Browser subcommands
 │   │   └── page.ts         # Page subcommands
 │   ├── scrapers/
-│   │   ├── twitter.ts      # Twitter extraction logic
+│   │   ├── twitter.ts      # Twitter extraction logic (with thread detection)
 │   │   ├── linkedin.ts     # LinkedIn extraction logic
-│   │   └── generic.ts      # Generic page extraction
+│   │   ├── generic.ts      # Generic page extraction
+│   │   └── common.ts       # Shared scraper utilities
 │   ├── utils/
 │   │   ├── parse.ts        # Number/duration parsing
-│   │   └── errors.ts       # Error handling
+│   │   ├── errors.ts       # Error handling
+│   │   └── index.ts        # Utility exports
 │   └── types.ts            # TypeScript interfaces
 ├── skill/
 │   └── scrape.md           # Claude Code skill
 ├── specs/                  # Specifications
 ├── tests/                  # Test files
+│   ├── cli.test.ts         # CLI tests
+│   ├── parse.test.ts       # Parser tests
+│   ├── errors.test.ts      # Error handling tests
+│   ├── browser.test.ts     # Browser retry logic tests
+│   └── thread-detection.test.ts  # Thread detection tests
 ├── dist/                   # Build output
 ├── package.json
 ├── tsconfig.json
