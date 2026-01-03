@@ -309,6 +309,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 12. Feature Enhancements | ✓ Completed |
 | 13. Code Quality Improvements | ✓ Completed |
 | 14. Advanced Features | ✓ Completed |
+| 15. Enhanced Twitter Metrics | ✓ Completed |
 
 ---
 
@@ -433,6 +434,29 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 - Browser connection retry tests: 7/7 passing
 - Thread detection tests: 33/33 passing
 - Total tests: 187 passing, 0 failing
+
+---
+
+## Phase 15: Enhanced Twitter Metrics
+
+### 15.1 Bookmark and Quote Tweet Metrics
+- [x] Add `bookmarks` and `quotes` optional fields to TwitterMetrics interface
+- [x] Extract bookmark count from aria-label interaction metrics
+- [x] Extract quote tweet count from aria-label interaction metrics
+- [x] Update formatMetrics helper in twitter commands to display new metrics
+- [x] Update specs documentation with new selector patterns
+- [x] All typechecks pass
+- [x] All 187 tests pass
+
+**Impact**: Complete Twitter engagement metrics including bookmarks (saves) and quote tweets, providing users with full visibility into tweet performance.
+
+**Implementation Details**:
+- Bookmarks and quotes extracted via aria-label parsing (no dedicated data-testid attributes)
+- Pattern matching: `/(\d+)\s+bookmarks?/i` and `/(\d+)\s+quotes?/i`
+- Optional fields ensure backward compatibility
+- Text output displays 🔖 for bookmarks and 💭 for quotes when available
+
+**Verify**: Enhanced Twitter metrics extraction complete ✓
 
 ---
 

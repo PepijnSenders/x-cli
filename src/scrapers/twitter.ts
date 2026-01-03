@@ -539,11 +539,36 @@ export async function extractTweets(page: Page): Promise<TwitterTweet[]> {
           }
         }
 
+        // Extract bookmarks and quotes from aria-label
+        let bookmarks: number | undefined = undefined;
+        let quotes: number | undefined = undefined;
+
+        // Look for elements with aria-label containing interaction metrics
+        const interactionElements = article.querySelectorAll('[aria-label]');
+        for (const el of interactionElements) {
+          const label = el.getAttribute('aria-label');
+          if (label && /(replies|reposts|likes|bookmarks|quotes|views)/.test(label.toLowerCase())) {
+            // Extract bookmarks: "3 bookmarks" or "3 Bookmarks"
+            const bookmarkMatch = label.match(/(\d+)\s+bookmarks?/i);
+            if (bookmarkMatch) {
+              bookmarks = parseMetric(el);
+            }
+
+            // Extract quotes: "5 quotes" or "5 Quotes"
+            const quoteMatch = label.match(/(\d+)\s+quotes?/i);
+            if (quoteMatch) {
+              quotes = parseMetric(el);
+            }
+          }
+        }
+
         const metrics: TwitterMetrics = {
           replies: parseMetric(replyEl),
           retweets: parseMetric(retweetEl),
           likes: parseMetric(likeEl),
-          views
+          views,
+          ...(bookmarks !== undefined && { bookmarks }),
+          ...(quotes !== undefined && { quotes })
         };
 
         // Detect tweet type

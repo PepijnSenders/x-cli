@@ -51,6 +51,8 @@ Reply Count:     [data-testid="reply"] span
 Retweet Count:   [data-testid="retweet"] span
 Like Count:      [data-testid="like"] span
 View Count:      [data-testid="views"] span  (or aria-label containing "views")
+Bookmark Count:  aria-label containing "bookmarks" (parsed from interaction metrics)
+Quote Count:     aria-label containing "quotes" (parsed from interaction metrics)
 Media:           [data-testid="tweetPhoto"] img
 ```
 

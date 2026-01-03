@@ -64,6 +64,10 @@ export interface TwitterMetrics {
   likes: number;
   /** Number of views (if available) */
   views: number;
+  /** Number of bookmarks (if available) */
+  bookmarks?: number;
+  /** Number of quote tweets (if available) */
+  quotes?: number;
 }
 
 /**

@@ -2,10 +2,25 @@
  * Twitter command handlers
  */
 
-import type { GlobalOptions, CountOptions, TwitterTweet } from '../types.js';
+import type { GlobalOptions, CountOptions, TwitterTweet, TwitterMetrics } from '../types.js';
 import { getPage } from '../browser.js';
 import { navigateToProfile, extractProfile, extractSearchResults, humanDelay, collectTimelineTweets } from '../scrapers/twitter.js';
 import { checkTwitterErrors, formatError, throwScraperError } from '../utils/index.js';
+
+/**
+ * Format tweet metrics for text display
+ */
+function formatMetrics(metrics: TwitterMetrics): string {
+  const parts = [
+    `💬 ${metrics.replies}`,
+    `🔁 ${metrics.retweets}`,
+    `❤️ ${metrics.likes}`,
+    `👁️ ${metrics.views}`,
+    ...(metrics.bookmarks !== undefined ? [`🔖 ${metrics.bookmarks}`] : []),
+    ...(metrics.quotes !== undefined ? [`💭 ${metrics.quotes}`] : [])
+  ];
+  return parts.join(' | ');
+}
 
 /**
  * Get Twitter user profile
@@ -179,7 +194,7 @@ export async function getTimeline(
         console.log(`Posted: ${new Date(tweet.createdAt).toLocaleString()}`);
         console.log(`Type: ${tweet.type}`);
         console.log(`\n${tweet.text}\n`);
-        console.log(`💬 ${tweet.metrics.replies} | 🔁 ${tweet.metrics.retweets} | ❤️ ${tweet.metrics.likes} | 👁️ ${tweet.metrics.views}`);
+        console.log(formatMetrics(tweet.metrics));
         if (tweet.url) {
           console.log(`URL: ${tweet.url}`);
         }
@@ -265,7 +280,7 @@ export async function getPost(
       console.log(`@${post.tweet.author.username} (${post.tweet.author.displayName})${post.tweet.author.verified ? ' ✓' : ''}`);
       console.log(`Posted: ${new Date(post.tweet.createdAt).toLocaleString()}`);
       console.log(`\n${post.tweet.text}\n`);
-      console.log(`💬 ${post.tweet.metrics.replies} | 🔁 ${post.tweet.metrics.retweets} | ❤️ ${post.tweet.metrics.likes} | 👁️ ${post.tweet.metrics.views}`);
+      console.log(formatMetrics(post.tweet.metrics));
       if (post.tweet.url) {
         console.log(`URL: ${post.tweet.url}`);
       }
@@ -280,7 +295,7 @@ export async function getPost(
         post.thread.forEach((tweet: TwitterTweet, index: number) => {
           console.log(`\n[${index + 1}] @${tweet.author.username}${tweet.author.verified ? ' ✓' : ''}`);
           console.log(tweet.text);
-          console.log(`💬 ${tweet.metrics.replies} | 🔁 ${tweet.metrics.retweets} | ❤️ ${tweet.metrics.likes}`);
+          console.log(formatMetrics(tweet.metrics));
         });
       }
 
@@ -291,7 +306,7 @@ export async function getPost(
         post.replies.forEach((tweet: TwitterTweet, index: number) => {
           console.log(`\n[${index + 1}] @${tweet.author.username}${tweet.author.verified ? ' ✓' : ''}`);
           console.log(tweet.text);
-          console.log(`💬 ${tweet.metrics.replies} | 🔁 ${tweet.metrics.retweets} | ❤️ ${tweet.metrics.likes}`);
+          console.log(formatMetrics(tweet.metrics));
         });
       }
 
@@ -369,7 +384,7 @@ export async function search(
         console.log(`Posted: ${new Date(tweet.createdAt).toLocaleString()}`);
         console.log(`Type: ${tweet.type}`);
         console.log(`\n${tweet.text}\n`);
-        console.log(`💬 ${tweet.metrics.replies} | 🔁 ${tweet.metrics.retweets} | ❤️ ${tweet.metrics.likes} | 👁️ ${tweet.metrics.views}`);
+        console.log(formatMetrics(tweet.metrics));
         if (tweet.url) {
           console.log(`URL: ${tweet.url}`);
         }
