@@ -2,13 +2,18 @@
   "manifest_version": 3,
   "name": "Browse",
   "description": "Browser extension for the browse CLI - scrape any webpage to markdown",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "alarms"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "<all_urls>",
+    "ws://localhost/*",
+    "ws://127.0.0.1/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
   ],
   "background": {
     "service_worker": "background.js"

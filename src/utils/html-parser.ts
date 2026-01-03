@@ -35,6 +35,17 @@ turndownService.addRule('removeEmptyLinks', {
   replacement: () => '',
 });
 
+// Remove image-only links (e.g., profile pics that link to profiles)
+turndownService.addRule('imageOnlyLinks', {
+  filter: (node) => {
+    if (node.nodeName !== 'A') return false;
+    const hasImage = !!node.querySelector('img');
+    const textContent = node.textContent?.trim();
+    return hasImage && !textContent;
+  },
+  replacement: () => '',
+});
+
 // Better image handling with alt text
 turndownService.addRule('images', {
   filter: 'img',
@@ -147,6 +158,14 @@ function normalizeMarkdown(md: string): string {
     .replace(/\s+\]/g, ']')
     // Remove empty list items
     .replace(/^-\s*$/gm, '')
+    // Remove standalone numbers (engagement counts like "4", "2,998", "5.7K")
+    .replace(/^[\d,\.]+[KMB]?\s*$/gm, '')
+    // Collapse consecutive headers (remove header if followed by another header)
+    .replace(/^(#{1,6} .+)\n\n(#{1,6} )/gm, '$2')
+    // Remove short standalone link lines (just a link with minimal text)
+    .replace(/^\[.{1,15}\]\([^)]+\)\s*$/gm, '')
+    // Clean up any resulting multiple blank lines again
+    .replace(/\n{3,}/g, '\n\n')
     // Trim
     .trim();
 }

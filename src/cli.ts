@@ -61,6 +61,7 @@ if (process.argv[2] === '__daemon__') {
           wait: parseInt(options.wait || '2000', 10),
           scroll: parseInt(options.scroll || '0', 10),
         });
+        process.exit(0);
       } catch (error) {
         if (error instanceof Error) {
           console.error('Error:', error.message);

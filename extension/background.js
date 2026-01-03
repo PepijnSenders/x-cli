@@ -1,7 +1,7 @@
 // Browse - Browser Extension
 // Auto-connects to daemon and relays commands to active tab
 
-const WS_URL = 'ws://localhost:9222';
+const WS_URL = 'ws://127.0.0.1:9222';
 let socket = null;
 let isConnected = false;
 let reconnectDelay = 1000;
@@ -16,35 +16,55 @@ function updateBadge(connected) {
 
 // Connect to daemon WebSocket server
 function connect() {
-  if (socket && socket.readyState === WebSocket.OPEN) {
+  console.log('connect() called, socket state:', socket?.readyState);
+
+  // Don't create new connection if one is already open or connecting
+  if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+    console.log('Already connected/connecting, skipping');
     return;
   }
 
   try {
-    socket = new WebSocket(WS_URL);
+    console.log('Creating WebSocket to', WS_URL);
+    const ws = new WebSocket(WS_URL);
+    socket = ws;
+    console.log('WebSocket created, readyState:', ws.readyState);
 
-    socket.onopen = () => {
+    // Keep service worker alive while connecting (MV3 workaround)
+    const keepAliveInterval = setInterval(() => {
+      console.log('Waiting for connection, state:', ws.readyState);
+      if (ws.readyState !== WebSocket.CONNECTING) {
+        clearInterval(keepAliveInterval);
+      }
+    }, 500);
+
+    ws.onopen = () => {
+      clearInterval(keepAliveInterval);
       console.log('Connected to Browse daemon');
       updateBadge(true);
       reconnectDelay = 1000; // Reset backoff on successful connection
 
       // Identify as extension client
-      socket.send(JSON.stringify({ type: 'extension' }));
+      ws.send(JSON.stringify({ type: 'extension' }));
     };
 
-    socket.onclose = () => {
+    ws.onclose = () => {
+      clearInterval(keepAliveInterval);
       console.log('Disconnected from Browse daemon');
       updateBadge(false);
-      socket = null;
+      if (socket === ws) {
+        socket = null;
+      }
       scheduleReconnect();
     };
 
-    socket.onerror = (error) => {
+    ws.onerror = (error) => {
+      clearInterval(keepAliveInterval);
       console.error('WebSocket error:', error);
       updateBadge(false);
     };
 
-    socket.onmessage = async (event) => {
+    ws.onmessage = async (event) => {
       try {
         const message = JSON.parse(event.data);
 
@@ -379,7 +399,23 @@ chrome.action.onClicked.addListener(() => {
   }
 });
 
+// Keepalive alarm to prevent service worker from being killed
+const KEEPALIVE_ALARM = 'keepalive';
+
+chrome.alarms.create(KEEPALIVE_ALARM, { periodInMinutes: 0.4 }); // Every 24 seconds
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === KEEPALIVE_ALARM) {
+    // Just check connection state and reconnect if needed
+    if (!isConnected && (!socket || socket.readyState === WebSocket.CLOSED)) {
+      console.log('Keepalive: reconnecting...');
+      connect();
+    }
+  }
+});
+
 // Auto-connect on extension load
 console.log('Browse extension loaded - auto-connecting...');
 updateBadge(false);
-connect();
+// Small delay to let service worker fully initialize
+setTimeout(() => connect(), 100);
