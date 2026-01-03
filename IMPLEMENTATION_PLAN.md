@@ -244,7 +244,7 @@ This document tracks the implementation of x-cli based on the spec phases.
 - [x] README.md with features, install, quick start
 - [x] Command reference in README
 - [x] CHANGELOG.md
-- [ ] CONTRIBUTING.md
+- [x] CONTRIBUTING.md
 
 ### Testing & Quality
 - [x] Type checking passes (bun run typecheck)
@@ -280,6 +280,10 @@ These items from specs/09-12 are now in scope:
 ---
 
 ## Recent Enhancements
+
+**2025-01-03 (Documentation):**
+- Created CONTRIBUTING.md with development setup, code style, PR process
+- Completes Phase 8 documentation
 
 **2025-01-03 (DM with Media):**
 - Added `--media <file>` option to `x dm send`
