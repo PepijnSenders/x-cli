@@ -72,32 +72,32 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 **Spec**: [specs/04-scrapers.md](specs/04-scrapers.md) (Twitter section)
 
 ### 4.1 Profile
-- [ ] `twitter profile <username>`
-- [ ] Handle: not found, suspended, private
+- [x] `twitter profile <username>`
+- [x] Handle: not found, suspended, private
 
-**Verify**: `session-scraper twitter profile elonmusk` returns profile JSON
+**Verify**: `session-scraper twitter profile elonmusk` returns profile JSON ✓
 
 ### 4.2 Timeline
-- [ ] `twitter timeline <username>`
-- [ ] `twitter timeline` (home feed)
-- [ ] `--count` option
-- [ ] Infinite scroll pagination
+- [x] `twitter timeline <username>`
+- [x] `twitter timeline` (home feed)
+- [x] `--count` option
+- [x] Infinite scroll pagination
 
-**Verify**: `session-scraper twitter timeline elonmusk --count 10` returns 10 tweets
+**Verify**: `session-scraper twitter timeline elonmusk --count 10` returns 10 tweets ✓
 
 ### 4.3 Post
-- [ ] `twitter post <url>`
-- [ ] Extract thread context
-- [ ] Extract replies
+- [x] `twitter post <url>`
+- [x] Extract thread context
+- [x] Extract replies
 
-**Verify**: `session-scraper twitter post <url>` returns tweet with context
+**Verify**: `session-scraper twitter post <url>` returns tweet with context ✓
 
 ### 4.4 Search
-- [ ] `twitter search <query>`
-- [ ] `--count` option
-- [ ] Support search operators
+- [x] `twitter search <query>`
+- [x] `--count` option
+- [x] Support search operators
 
-**Verify**: `session-scraper twitter search "AI"` returns results
+**Verify**: `session-scraper twitter search "AI"` returns results ✓
 
 ---
 
@@ -220,7 +220,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 1. Project Setup | ✓ Completed |
 | 2. Browser Connection | ✓ Completed |
 | 3. Generic Scraping | ✓ Completed |
-| 4. Twitter Scraper | Not Started |
+| 4. Twitter Scraper | ✓ Completed |
 | 5. LinkedIn Scraper | Not Started |
 | 6. Error Handling | Not Started |
 | 7. Skill Definition | Not Started |
