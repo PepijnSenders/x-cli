@@ -1,0 +1,33 @@
+# Source files (using built dist/)
+src/
+tests/
+
+# Config files
+tsconfig.json
+.gitignore
+.github/
+
+# Development files
+*.log
+.env
+.env.*
+*.tgz
+
+# Build artifacts not needed
+dist/x
+dist/x.exe
+
+# Documentation source
+docs/
+specs/
+IMPLEMENTATION_PLAN.md
+CONTRIBUTING.md
+CHANGELOG.md
+
+# Claude integration
+.claude/
+
+# Misc
+.DS_Store
+node_modules/
+bun.lockb

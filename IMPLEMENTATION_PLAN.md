@@ -260,7 +260,7 @@ This document tracks the implementation of x-cli based on the spec phases.
 These items from specs/09-12 are now in scope:
 
 ### Release & Distribution (specs/09-release-distribution.md)
-- [ ] npm package publishing
+- [x] npm package preparation (scoped @pashask/x-cli, files, .npmignore)
 - [ ] Homebrew formula
 - [x] Binary releases (darwin-arm64, darwin-x64, linux-x64, win-x64)
 - [x] GitHub Actions CI/CD
@@ -280,6 +280,13 @@ These items from specs/09-12 are now in scope:
 ---
 
 ## Recent Enhancements
+
+**2025-01-03 (npm Package Preparation):**
+- Scoped package name: @pashask/x-cli
+- Added repository, bugs, homepage fields to package.json
+- Added files field to include only dist/index.js, README.md, LICENSE
+- Created .npmignore to exclude source, tests, docs, and dev files
+- Ready for `npm publish --access public`
 
 **2025-01-03 (Build Optimization):**
 - Enabled minification in all build scripts
