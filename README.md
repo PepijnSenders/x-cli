@@ -293,10 +293,11 @@ Result:
 See `/specs` for detailed specifications:
 
 - [Overview & Architecture](specs/01-overview.md)
-- [MCP Tools](specs/02-mcp-tools.md)
-- [Twitter Scraper](specs/03-twitter-scraper.md)
-- [LinkedIn Scraper](specs/04-linkedin-scraper.md)
-- [Generic Scraper](specs/05-generic-scraper.md)
+- [CLI Interface](specs/02-cli-interface.md)
+- [Skill Definition](specs/03-skill-definition.md)
+- [Scrapers (Twitter, LinkedIn, Generic)](specs/04-scrapers.md)
+- [Browser Connection](specs/05-browser-connection.md)
+- [Publishing](specs/06-publishing.md)
 
 ## Development
 
