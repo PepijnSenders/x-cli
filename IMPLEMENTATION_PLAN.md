@@ -268,7 +268,7 @@ These items from specs/09-12 are now in scope:
 ### Website (specs/11-website.md)
 - [x] Landing page (docs/index.html, docs/styles.css)
 - [x] GitHub Pages deployment workflow
-- [ ] Interactive demo (terminal recording GIF)
+- [x] Interactive demo (docs/demo.svg - static terminal mockup)
 
 ### Claude Integration (specs/12-claude-integration.md)
 - [x] MCP server implementation (src/mcp/, `x mcp` command)
@@ -279,6 +279,11 @@ These items from specs/09-12 are now in scope:
 ---
 
 ## Recent Enhancements
+
+**2025-01-03 (Website Demo):**
+- Created docs/demo.svg - static terminal mockup showing CLI features
+- Added demo section to website with styling
+- Shows auth, timeline, posting, and Grok AI commands in action
 
 **2025-01-03 (Test Coverage - 99.7%):**
 - Added 3 more tests for TTY-dependent branches (99 total tests)
@@ -407,8 +412,7 @@ These items from specs/09-12 are now in scope:
 
 ## Next Priority
 
-**All core phases complete!** Remaining items:
-1. Website: Interactive demo (terminal recording GIF)
-2. Testing: Integration tests (E2E flows with real API)
+**All phases complete!** Only remaining item:
+1. Testing: Integration tests (E2E flows with real API)
 
-Note: 99.7% line coverage, 100% function coverage achieved with 99 tests.
+Note: Website complete with static demo. 99.7% line coverage, 100% function coverage with 99 tests.

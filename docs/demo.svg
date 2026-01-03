@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <style>
+    .terminal { fill: #0d1117; }
+    .header { fill: #161b22; }
+    .btn { fill: #30363d; }
+    .btn-close { fill: #f85149; }
+    .btn-min { fill: #f0883e; }
+    .btn-max { fill: #3fb950; }
+    .text { font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 12px; }
+    .prompt { fill: #3fb950; }
+    .command { fill: #e6edf3; }
+    .output { fill: #8b949e; }
+    .accent { fill: #58a6ff; }
+    .success { fill: #3fb950; }
+    .metric-red { fill: #f85149; }
+    .metric-green { fill: #3fb950; }
+    .metric-blue { fill: #58a6ff; }
+    .username { fill: #e6edf3; font-weight: bold; }
+    .time { fill: #8b949e; }
+    .verified { fill: #58a6ff; }
+  </style>
+
+  <!-- Terminal window -->
+  <rect class="terminal" width="600" height="400" rx="8"/>
+
+  <!-- Header bar -->
+  <rect class="header" width="600" height="28" rx="8"/>
+  <rect class="terminal" y="20" width="600" height="10"/>
+
+  <!-- Window buttons -->
+  <circle class="btn-close" cx="16" cy="14" r="6"/>
+  <circle class="btn-min" cx="36" cy="14" r="6"/>
+  <circle class="btn-max" cx="56" cy="14" r="6"/>
+
+  <!-- Title -->
+  <text x="300" y="18" text-anchor="middle" class="text output">x-cli</text>
+
+  <!-- Terminal content -->
+  <g transform="translate(16, 48)">
+    <!-- Line 1: Auth command -->
+    <text y="0" class="text">
+      <tspan class="prompt">$</tspan>
+      <tspan class="command"> x auth status</tspan>
+    </text>
+    <text y="18" class="text success">Logged in as @developer</text>
+
+    <!-- Line 2: Timeline command -->
+    <text y="48" class="text">
+      <tspan class="prompt">$</tspan>
+      <tspan class="command"> x timeline home --limit 2</tspan>
+    </text>
+
+    <!-- Tweet 1 -->
+    <text y="72" class="text">
+      <tspan class="username">@bunjs</tspan>
+      <tspan class="verified"> &#10003;</tspan>
+      <tspan class="time"> · 2h</tspan>
+    </text>
+    <text y="90" class="text output">Bun v1.2 is here! 2x faster than before.</text>
+    <text y="108" class="text">
+      <tspan class="metric-red">&#9829; 1.5K</tspan>
+      <tspan class="metric-green">  &#8634; 342</tspan>
+      <tspan class="metric-blue">  &#128172; 89</tspan>
+    </text>
+
+    <!-- Tweet 2 -->
+    <text y="136" class="text">
+      <tspan class="username">@typescript</tspan>
+      <tspan class="verified"> &#10003;</tspan>
+      <tspan class="time"> · 5h</tspan>
+    </text>
+    <text y="154" class="text output">TypeScript 5.4 beta is now available!</text>
+    <text y="172" class="text">
+      <tspan class="metric-red">&#9829; 892</tspan>
+      <tspan class="metric-green">  &#8634; 156</tspan>
+      <tspan class="metric-blue">  &#128172; 42</tspan>
+    </text>
+
+    <!-- Line 3: Post command -->
+    <text y="206" class="text">
+      <tspan class="prompt">$</tspan>
+      <tspan class="command"> x post create "Hello from x-cli!"</tspan>
+    </text>
+    <text y="224" class="text success">&#10003; Posted successfully</text>
+    <text y="242" class="text output">https://x.com/developer/status/123456789</text>
+
+    <!-- Line 4: Grok command -->
+    <text y="272" class="text">
+      <tspan class="prompt">$</tspan>
+      <tspan class="command"> x grok "summarize @bunjs"</tspan>
+    </text>
+    <text y="290" class="text output">@bunjs focuses on JavaScript runtime performance,</text>
+    <text y="308" class="text output">with recent posts about Bun v1.2 release and</text>
+    <text y="326" class="text output">cross-platform compatibility improvements.</text>
+  </g>
+</svg>

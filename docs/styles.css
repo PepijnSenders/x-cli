@@ -161,6 +161,18 @@ section h2 {
   margin-bottom: 0.75rem;
 }
 
+/* Demo */
+.demo {
+  text-align: center;
+}
+
+.demo img {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
 /* Features */
 .feature-grid {
   display: grid;
