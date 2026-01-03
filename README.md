@@ -89,6 +89,128 @@ Click the Playwriter extension icon on tabs you want to control (icon turns gree
 | `scrape_page` | Extract text/links/images |
 | `execute_script` | Run custom JavaScript |
 
+## Tool Reference
+
+### Twitter Tools
+
+#### `scrape_twitter_profile`
+Get user profile information including bio, follower counts, and verification status.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `username` | string | Yes | Twitter username (without @) |
+
+**Example:**
+```json
+{ "username": "elonmusk" }
+```
+
+**Returns:** Profile object with `username`, `displayName`, `bio`, `followersCount`, `followingCount`, `verified`, etc.
+
+#### `scrape_twitter_timeline`
+Get tweets from a user's timeline or home feed with pagination.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `username` | string | No | Username to scrape (omit for home timeline) |
+| `count` | number | No | Number of tweets (default: 20, max: 100) |
+
+#### `scrape_twitter_post`
+Get a single tweet with thread context and replies.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | Full tweet URL (e.g., https://x.com/user/status/123) |
+
+#### `scrape_twitter_search`
+Search Twitter for tweets matching a query.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | Yes | Search query (supports Twitter operators) |
+| `count` | number | No | Number of results (default: 20, max: 100) |
+
+### LinkedIn Tools
+
+#### `scrape_linkedin_profile`
+Get profile information including experience, education, and skills.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | Full LinkedIn profile URL |
+
+#### `scrape_linkedin_posts`
+Get posts from a LinkedIn user's activity feed.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | LinkedIn profile URL |
+| `count` | number | No | Number of posts (default: 10, max: 50) |
+
+#### `scrape_linkedin_search`
+Search LinkedIn for people, companies, or posts.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | Yes | Search query |
+| `type` | string | No | "people", "companies", or "posts" (default: "people") |
+| `count` | number | No | Number of results (default: 10, max: 50) |
+
+### Browser Tools
+
+#### `navigate`
+Navigate the active tab to a URL.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | URL to navigate to |
+
+#### `take_screenshot`
+Capture a screenshot of the current page.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `fullPage` | boolean | No | Capture full page (default: false) |
+
+#### `scrape_page`
+Extract text content, links, and images from the current page.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `selector` | string | No | CSS selector to scope extraction |
+
+#### `execute_script`
+Run custom JavaScript on the page.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `script` | string | Yes | JavaScript code to execute |
+
+## Troubleshooting
+
+### "Extension not connected"
+1. Make sure Chrome has the Playwriter extension installed
+2. Click the extension icon on a tab (icon turns green)
+3. The extension relay server should be running
+
+### "No pages available"
+Click the Playwriter extension icon on a Chrome tab to enable control.
+
+### "Rate limit detected"
+Wait a few minutes before making more requests. The scraper includes automatic delays, but rapid consecutive requests may trigger platform rate limits.
+
+### "Login required"
+Log into the website (Twitter, LinkedIn, etc.) in your browser first. The scraper uses your existing session.
+
+### "Profile not found"
+Check that the username or URL is correct. The account may have been deleted or suspended.
+
+### Debug Mode
+Enable verbose logging with:
+```bash
+DEBUG=session-scraper:* npx @pep/session-scraper-mcp
+```
+
 ## Example Usage
 
 ```

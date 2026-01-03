@@ -255,10 +255,10 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 **Spec Reference:** [specs/06-documentation.md](specs/06-documentation.md)
 
 ### 8.1 User Documentation
-- [ ] Getting started guide
-- [ ] Tool reference (all parameters, examples)
-- [ ] Troubleshooting guide
-- [ ] FAQ
+- [x] Getting started guide
+- [x] Tool reference (all parameters, examples)
+- [x] Troubleshooting guide
+- [x] FAQ
 
 **Verify:** `docs/` directory contains all guides; README links to docs
 
@@ -310,7 +310,7 @@ MCP server for scraping "uncrawlable" sites using existing browser session via P
 | 5. LinkedIn Scraper | Complete |
 | 6. Error Handling | Complete |
 | 7. Testing | Complete |
-| 8. Documentation | Not Started |
+| 8. Documentation | Complete |
 | 9. Publishing | Not Started |
 | 10. Additional Scrapers | Not Started |
 | 11. Advanced Features | Not Started |
