@@ -1,0 +1,27 @@
+{
+  "name": "session-scraper",
+  "version": "0.1.0",
+  "description": "Scrape Twitter, LinkedIn, and web pages using your browser session",
+  "author": "PepijnSenders",
+  "homepage": "https://github.com/PepijnSenders/x-cli",
+  "keywords": ["scraper", "twitter", "linkedin", "browser", "playwriter"],
+  "skills": [
+    {
+      "name": "scrape",
+      "description": "Scrape social media and web pages using your authenticated browser",
+      "file": "skill/scrape.md"
+    }
+  ],
+  "prerequisites": [
+    {
+      "type": "npm",
+      "package": "@pep/session-scraper-mcp",
+      "global": true
+    },
+    {
+      "type": "extension",
+      "name": "Playwriter",
+      "url": "https://github.com/anthropics/playwriter"
+    }
+  ]
+}

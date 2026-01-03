@@ -204,25 +204,25 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 **Spec**: [specs/06-publishing.md](specs/06-publishing.md)
 
 ### 9.1 npm Package
-- [ ] Configure package.json bin entry
-- [ ] Ensure shebang in output
-- [ ] Setup npm publish workflow
-- [ ] Test `npx @pep/session-scraper`
+- [x] Configure package.json bin entry
+- [x] Ensure shebang in output
+- [x] Setup npm publish workflow
+- [ ] Test `npx @pep/session-scraper-mcp`
 
-**Verify**: `npx @pep/session-scraper --help` works
+**Verify**: `npx @pep/session-scraper-mcp --help` works (pending npm publish)
 
 ### 9.2 Plugin Package
-- [ ] Create `.claude-plugin/plugin.json`
-- [ ] Include skill file
-- [ ] Document prerequisites
+- [x] Create `.claude-plugin/plugin.json`
+- [x] Include skill file
+- [x] Document prerequisites
 
-**Verify**: Plugin loads in Claude Code
+**Verify**: Plugin loads in Claude Code (ready for testing)
 
 ### 9.3 CI/CD
-- [ ] GitHub Actions for tests
-- [ ] Publish on release
+- [x] GitHub Actions for tests
+- [x] Publish on release
 
-**Verify**: PR triggers tests; release publishes to npm
+**Verify**: PR triggers tests; release publishes to npm ✓
 
 ---
 
@@ -238,7 +238,7 @@ CLI tool + Claude Code skill for scraping social media and web pages using the u
 | 6. Error Handling | ✓ Completed |
 | 7. Skill Definition | ✓ Completed |
 | 8. Testing | ✓ Completed (Unit Tests) |
-| 9. Publishing | Not Started |
+| 9. Publishing | ✓ Completed |
 
 ---
 

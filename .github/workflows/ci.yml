@@ -34,3 +34,6 @@ jobs:
         run: |
           test -f dist/index.js || exit 1
           echo "Build successful"
+
+      - name: Verify CLI executable
+        run: ./dist/index.js --help

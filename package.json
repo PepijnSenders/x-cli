@@ -17,6 +17,8 @@
   "homepage": "https://github.com/PepijnSenders/x-cli#readme",
   "files": [
     "dist",
+    "skill",
+    ".claude-plugin",
     "README.md",
     "LICENSE"
   ],
