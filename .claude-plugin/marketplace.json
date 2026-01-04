@@ -1,5 +1,6 @@
 {
   "$schema": "https://cdn.jsdelivr.net/npm/@anthropic-ai/claude-code-plugins@latest/marketplace.schema.json",
+  "owner": "PepijnSenders",
   "name": "browse-cli",
   "description": "Scrape any webpage to markdown using your browser session",
   "plugins": [
@@ -7,7 +8,7 @@
       "name": "browse",
       "description": "Scrape any webpage to markdown using your browser session",
       "version": "1.0.6",
-      "path": "."
+      "source": "."
     }
   ]
 }
