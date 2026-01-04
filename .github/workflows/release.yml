@@ -14,7 +14,52 @@ on:
         default: false
 
 jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: darwin-arm64
+            artifact: browse-darwin-arm64
+          - os: macos-13
+            target: darwin-x64
+            artifact: browse-darwin-x64
+          - os: ubuntu-latest
+            target: linux-x64
+            artifact: browse-linux-x64
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build standalone binary
+        run: |
+          bun build src/index.ts --compile --target=bun-${{ matrix.target }} --outfile=browse
+          chmod +x browse
+          # Create tarball with extension folder
+          mkdir -p browse-${{ matrix.target }}
+          mv browse browse-${{ matrix.target }}/
+          cp -r extension browse-${{ matrix.target }}/
+          cp -r skills browse-${{ matrix.target }}/
+          cp README.md LICENSE browse-${{ matrix.target }}/
+          tar -czvf ${{ matrix.artifact }}.tar.gz browse-${{ matrix.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.tar.gz
+
   release:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -59,7 +104,6 @@ jobs:
       - name: Update package.json version
         run: |
           npm version ${{ inputs.version }} --no-git-tag-version
-          # Also update plugin.json
           jq '.version = "${{ inputs.version }}"' .claude-plugin/plugin.json > tmp.json && mv tmp.json .claude-plugin/plugin.json
 
       - name: Install dependencies
@@ -70,12 +114,6 @@ jobs:
 
       - name: Run tests
         run: bun test
-
-      - name: Build
-        run: bun run build
-
-      - name: Verify CLI
-        run: ./dist/cli.js --help
 
       - name: Commit version bump
         run: |
@@ -88,10 +126,24 @@ jobs:
           git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
           git push origin "v${{ inputs.version }}"
 
-      - name: Generate release notes
-        id: release_notes
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release assets
         run: |
-          # Get commits since last tag
+          mkdir -p release-assets
+          mv artifacts/*/*.tar.gz release-assets/
+
+      - name: Generate checksums
+        run: |
+          cd release-assets
+          shasum -a 256 *.tar.gz > checksums.txt
+          cat checksums.txt
+
+      - name: Generate release notes
+        run: |
           LAST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
           if [ -n "$LAST_TAG" ]; then
             COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --no-merges | head -20)
@@ -99,22 +151,34 @@ jobs:
             COMMITS=$(git log --pretty=format:"- %s" --no-merges | head -20)
           fi
 
-          # Create release notes
-          cat << EOF > release_notes.md
+          cat << 'EOF' > release_notes.md
           ## What's Changed
 
-          ${COMMITS}
+          $COMMITS
 
           ## Installation
 
-          \`\`\`bash
-          npm install -g browse-cli
-          # or
-          brew tap pepijnsenders/tap && brew install browse
-          \`\`\`
+          ### Homebrew (macOS/Linux)
+          ```bash
+          brew tap pepijnsenders/tap
+          brew install browse
+          ```
 
-          **Full Changelog**: https://github.com/PepijnSenders/browse-cli/compare/${LAST_TAG:-v0.0.0}...v${{ inputs.version }}
+          ### Manual Download
+          Download the appropriate binary for your platform from the assets below.
+
+          ### npm (if you prefer)
+          ```bash
+          npm install -g @pep/browse-cli
+          ```
+
+          ## Checksums (SHA256)
+          ```
           EOF
+          cat release-assets/checksums.txt >> release_notes.md
+          echo '```' >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/PepijnSenders/browse-cli/compare/${LAST_TAG:-v0.0.0}...v${{ inputs.version }}" >> release_notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -123,7 +187,9 @@ jobs:
           name: v${{ inputs.version }}
           body_path: release_notes.md
           prerelease: ${{ inputs.prerelease }}
-          generate_release_notes: false
+          files: |
+            release-assets/*.tar.gz
+            release-assets/checksums.txt
 
       - name: Publish to npm
         run: npm publish --access public
@@ -132,12 +198,9 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## Release v${{ inputs.version }} Complete! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "## Release v${{ inputs.version }} Complete!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Version bumped in package.json" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Git tag v${{ inputs.version }} created" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ GitHub Release published" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ npm package published" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Next steps" >> $GITHUB_STEP_SUMMARY
-          echo "- Update Homebrew formula with new SHA256" >> $GITHUB_STEP_SUMMARY
+          echo "- Version bumped in package.json" >> $GITHUB_STEP_SUMMARY
+          echo "- Git tag v${{ inputs.version }} created" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub Release published with binaries" >> $GITHUB_STEP_SUMMARY
+          echo "- npm package published" >> $GITHUB_STEP_SUMMARY

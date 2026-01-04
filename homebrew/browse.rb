@@ -1,25 +1,46 @@
 class Browse < Formula
   desc "Scrape any webpage to markdown using your browser session"
   homepage "https://github.com/PepijnSenders/browse-cli"
-  url "https://registry.npmjs.org/@pep/browse-cli/-/browse-cli-1.0.3.tgz"
-  sha256 "c8a58e4a16183ffd07a7c63b2cea1cd00b2ae130daaecf387fb18644616ff020"
+  version "1.0.3"
   license "MIT"
 
-  depends_on "node"
+  on_macos do
+    on_arm do
+      url "https://github.com/PepijnSenders/browse-cli/releases/download/v#{version}/browse-darwin-arm64.tar.gz"
+      # sha256 will be auto-filled after release
+      sha256 "PLACEHOLDER"
+    end
+    on_intel do
+      url "https://github.com/PepijnSenders/browse-cli/releases/download/v#{version}/browse-darwin-x64.tar.gz"
+      sha256 "PLACEHOLDER"
+    end
+  end
+
+  on_linux do
+    on_intel do
+      url "https://github.com/PepijnSenders/browse-cli/releases/download/v#{version}/browse-linux-x64.tar.gz"
+      sha256 "PLACEHOLDER"
+    end
+  end
 
   def install
-    system "npm", "install", *Language::Node.std_npm_install_args(libexec)
-    bin.install_symlink Dir["#{libexec}/bin/*"]
+    # The tarball extracts to browse-{platform}/
+    # Find the binary and extension
+    bin.install Dir["browse-*/browse"].first => "browse"
+
+    # Install extension for Chrome
+    pkgshare.install Dir["browse-*/extension"].first => "extension"
+    pkgshare.install Dir["browse-*/skills"].first => "skills"
   end
 
   def caveats
     <<~EOS
-      To use browse, you need to install the Chrome extension:
+      To use browse, install the Chrome extension:
 
       1. Open chrome://extensions in Chrome
       2. Enable "Developer mode" (top right)
       3. Click "Load unpacked"
-      4. Select: #{opt_libexec}/lib/node_modules/@pep/browse-cli/extension
+      4. Select: #{pkgshare}/extension
 
       Then start the daemon:
         browse init
