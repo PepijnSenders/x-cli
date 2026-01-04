@@ -2,7 +2,7 @@
 
 **Scrape any webpage to markdown using your browser session**
 
-[![npm version](https://img.shields.io/npm/v/browse-cli.svg)](https://www.npmjs.com/package/browse-cli)
+[![npm version](https://img.shields.io/npm/v/@pep/browse-cli.svg)](https://www.npmjs.com/package/@pep/browse-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 No API keys. No rate limits. No bot detection. Uses your actual browser session.
@@ -32,17 +32,17 @@ The Browse extension connects your authenticated browser sessions to the CLI via
 
 ## Installation
 
-### npm (recommended)
-
-```bash
-npm install -g browse-cli
-```
-
-### Homebrew
+### Homebrew (recommended)
 
 ```bash
 brew tap pepijnsenders/tap
 brew install browse
+```
+
+### npm
+
+```bash
+npm install -g @pep/browse-cli
 ```
 
 ### From source
@@ -161,7 +161,19 @@ browse https://example.com --json | jq .
 
 ## Claude Code Integration
 
-This package includes a Claude Code skill for natural language web scraping:
+This package includes a Claude Code skill for natural language web scraping.
+
+### Install the Plugin
+
+```bash
+# In Claude Code, run:
+/plugin marketplace add PepijnSenders/browse-cli
+/plugin install browse@PepijnSenders-browse-cli
+```
+
+### Usage
+
+Once installed, Claude can scrape pages naturally:
 
 ```
 You: Get the content from https://news.ycombinator.com
@@ -170,8 +182,6 @@ Claude: [runs: browse https://news.ycombinator.com]
 You: Scrape this Twitter profile and scroll to get more tweets
 Claude: [runs: browse https://x.com/openai --scroll 3]
 ```
-
-The skill is automatically available when installed globally via npm.
 
 ## Troubleshooting
 
