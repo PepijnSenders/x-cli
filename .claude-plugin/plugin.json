@@ -2,26 +2,13 @@
   "name": "browse",
   "version": "1.0.0",
   "description": "Scrape any webpage to markdown using your browser session",
-  "author": "PepijnSenders",
+  "author": {
+    "name": "PepijnSenders",
+    "url": "https://github.com/PepijnSenders"
+  },
   "homepage": "https://github.com/PepijnSenders/browse-cli",
-  "keywords": ["scraper", "markdown", "browser", "websocket"],
-  "skills": [
-    {
-      "name": "browse",
-      "description": "Scrape any webpage to markdown using your authenticated browser",
-      "file": "skill/browse/SKILL.md"
-    }
-  ],
-  "prerequisites": [
-    {
-      "type": "npm",
-      "package": "browse-cli",
-      "global": true
-    },
-    {
-      "type": "extension",
-      "name": "Browse",
-      "description": "Install from extension/ directory"
-    }
-  ]
+  "repository": "https://github.com/PepijnSenders/browse-cli",
+  "license": "MIT",
+  "keywords": ["scraper", "markdown", "browser", "websocket", "web", "scraping"],
+  "skills": "./skills/"
 }

@@ -1,6 +1,6 @@
 ---
 name: browse
-description: Scrape any webpage to markdown using the user's authenticated browser session. Use when you need to fetch web content, scrape pages, or get information from websites that require login.
+description: Scrape any webpage to markdown using the user's authenticated browser session. Use when you need to fetch web content, extract data from websites, scrape pages requiring login, convert HTML to markdown, or get content from social media profiles like Twitter/X or LinkedIn.
 allowed-tools: Bash(browse:*)
 ---
 

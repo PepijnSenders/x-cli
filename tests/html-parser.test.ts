@@ -16,9 +16,10 @@ describe('htmlToMarkdown', () => {
   });
 
   test('converts links', () => {
-    const html = '<a href="https://example.com">Example</a>';
+    // Use longer link text or context to avoid short-link cleanup
+    const html = '<p>Visit <a href="https://example.com">Example Website Here</a> for more info.</p>';
     const md = htmlToMarkdown(html);
-    expect(md).toContain('[Example](https://example.com');
+    expect(md).toContain('[Example Website Here](https://example.com');
   });
 
   test('converts lists', () => {
@@ -37,7 +38,8 @@ describe('htmlToMarkdown', () => {
   });
 
   test('removes tracking params from links', () => {
-    const html = '<a href="https://example.com?utm_source=test&id=123">Link</a>';
+    // Use longer link text or context to avoid short-link cleanup
+    const html = '<p>Check out <a href="https://example.com?utm_source=test&id=123">This Interesting Article</a> today.</p>';
     const md = htmlToMarkdown(html);
     expect(md).not.toContain('utm_source');
     expect(md).toContain('id=123');

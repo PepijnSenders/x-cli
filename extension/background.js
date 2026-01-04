@@ -1,67 +1,167 @@
 // Browse - Browser Extension
 // Auto-connects to daemon and relays commands to active tab
+// Designed for MV3 service worker stability
+
+const EXTENSION_VERSION = '1.0.3-debug';
+console.log('Browse extension loaded, version:', EXTENSION_VERSION);
 
 const WS_URL = 'ws://127.0.0.1:9222';
+const HEALTH_URL = 'http://127.0.0.1:9223/health';
+
 let socket = null;
 let isConnected = false;
 let reconnectDelay = 1000;
-const MAX_RECONNECT_DELAY = 30000;
+let heartbeatInterval = null;
+let connectionTimeoutId = null;
+
+const MAX_RECONNECT_DELAY = 10000; // Reduced from 30s to 10s
+const HEARTBEAT_INTERVAL = 15000;  // Ping every 15 seconds
+const CONNECTION_TIMEOUT = 5000;   // 5 second connection timeout
 
 // Connection state badge
 function updateBadge(connected) {
   isConnected = connected;
   chrome.action.setBadgeText({ text: connected ? 'ON' : '' });
   chrome.action.setBadgeBackgroundColor({ color: connected ? '#22c55e' : '#ef4444' });
+
+  // Persist connection state for service worker restarts
+  chrome.storage.session.set({
+    isConnected: connected,
+    lastStateChange: Date.now()
+  });
+}
+
+// Heartbeat to keep connection alive and detect dead sockets
+function startHeartbeat() {
+  stopHeartbeat();
+  heartbeatInterval = setInterval(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      try {
+        socket.send(JSON.stringify({ action: 'ping' }));
+        console.log('Heartbeat ping sent');
+      } catch (e) {
+        console.error('Heartbeat failed:', e);
+        handleDisconnect();
+      }
+    } else {
+      console.log('Heartbeat: socket not open, reconnecting...');
+      handleDisconnect();
+    }
+  }, HEARTBEAT_INTERVAL);
+}
+
+function stopHeartbeat() {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
+  }
+}
+
+// Clean disconnect handling
+function handleDisconnect() {
+  stopHeartbeat();
+  if (connectionTimeoutId) {
+    clearTimeout(connectionTimeoutId);
+    connectionTimeoutId = null;
+  }
+
+  if (socket) {
+    try {
+      socket.close();
+    } catch {}
+    socket = null;
+  }
+
+  updateBadge(false);
+  scheduleReconnect();
+}
+
+// Check if daemon is reachable (faster than WebSocket timeout)
+async function isDaemonReachable() {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+
+    const response = await fetch(HEALTH_URL, {
+      signal: controller.signal,
+      mode: 'cors'
+    });
+    clearTimeout(timeout);
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 // Connect to daemon WebSocket server
-function connect() {
-  console.log('connect() called, socket state:', socket?.readyState);
+async function connect() {
+  console.log('connect() called');
 
-  // Don't create new connection if one is already open or connecting
-  if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
-    console.log('Already connected/connecting, skipping');
-    return;
+  // Clean up any existing socket
+  if (socket) {
+    try {
+      socket.close();
+    } catch {}
+    socket = null;
+  }
+
+  if (connectionTimeoutId) {
+    clearTimeout(connectionTimeoutId);
+    connectionTimeoutId = null;
+  }
+
+  // Quick health check first (optional - falls back to WebSocket if health endpoint not available)
+  const reachable = await isDaemonReachable();
+  if (!reachable) {
+    console.log('Daemon health check failed, trying WebSocket anyway...');
   }
 
   try {
-    console.log('Creating WebSocket to', WS_URL);
+    console.log('Creating WebSocket to', WS_URL, 'at', new Date().toISOString());
     const ws = new WebSocket(WS_URL);
     socket = ws;
     console.log('WebSocket created, readyState:', ws.readyState);
 
-    // Keep service worker alive while connecting (MV3 workaround)
-    const keepAliveInterval = setInterval(() => {
-      console.log('Waiting for connection, state:', ws.readyState);
-      if (ws.readyState !== WebSocket.CONNECTING) {
-        clearInterval(keepAliveInterval);
+    // Connection timeout - don't wait forever
+    connectionTimeoutId = setTimeout(() => {
+      if (ws.readyState === WebSocket.CONNECTING) {
+        console.log('Connection timeout, closing...');
+        ws.close();
+        socket = null;
+        scheduleReconnect();
       }
-    }, 500);
+    }, CONNECTION_TIMEOUT);
 
     ws.onopen = () => {
-      clearInterval(keepAliveInterval);
+      if (connectionTimeoutId) {
+        clearTimeout(connectionTimeoutId);
+        connectionTimeoutId = null;
+      }
+
       console.log('Connected to Browse daemon');
       updateBadge(true);
       reconnectDelay = 1000; // Reset backoff on successful connection
 
+      // Start heartbeat
+      startHeartbeat();
+
       // Identify as extension client
       ws.send(JSON.stringify({ type: 'extension' }));
+
+      // Persist that we want to stay connected
+      chrome.storage.session.set({ shouldBeConnected: true });
     };
 
-    ws.onclose = () => {
-      clearInterval(keepAliveInterval);
-      console.log('Disconnected from Browse daemon');
-      updateBadge(false);
+    ws.onclose = (event) => {
+      console.log('WebSocket closed:', event.code, event.reason);
       if (socket === ws) {
-        socket = null;
+        handleDisconnect();
       }
-      scheduleReconnect();
     };
 
     ws.onerror = (error) => {
-      clearInterval(keepAliveInterval);
       console.error('WebSocket error:', error);
-      updateBadge(false);
+      // onclose will be called after onerror
     };
 
     ws.onmessage = async (event) => {
@@ -74,6 +174,12 @@ function connect() {
           return;
         }
 
+        // Handle pong response
+        if (message.type === 'pong') {
+          console.log('Heartbeat pong received');
+          return;
+        }
+
         await handleMessage(message);
       } catch (error) {
         console.error('Error handling message:', error);
@@ -82,18 +188,18 @@ function connect() {
     };
   } catch (error) {
     console.error('Failed to connect:', error);
-    updateBadge(false);
-    scheduleReconnect();
+    handleDisconnect();
   }
 }
 
 // Schedule reconnection with exponential backoff
 function scheduleReconnect() {
-  console.log(`Reconnecting in ${reconnectDelay / 1000}s...`);
+  console.log(`Scheduling reconnect in ${reconnectDelay / 1000}s...`);
+
   setTimeout(() => {
     if (!isConnected) {
       connect();
-      reconnectDelay = Math.min(reconnectDelay * 2, MAX_RECONNECT_DELAY);
+      reconnectDelay = Math.min(reconnectDelay * 1.5, MAX_RECONNECT_DELAY);
     }
   }, reconnectDelay);
 }
@@ -391,31 +497,52 @@ async function typeText(selector, text) {
   );
 }
 
-// Icon click shows status (manual reconnect)
+// Icon click - manual reconnect
 chrome.action.onClicked.addListener(() => {
+  console.log('Extension icon clicked');
   if (!isConnected) {
-    reconnectDelay = 1000; // Reset backoff
+    reconnectDelay = 1000; // Reset backoff for manual reconnect
     connect();
   }
 });
 
-// Keepalive alarm to prevent service worker from being killed
+// Keepalive alarm to prevent service worker death and check connection
 const KEEPALIVE_ALARM = 'keepalive';
 
-chrome.alarms.create(KEEPALIVE_ALARM, { periodInMinutes: 0.4 }); // Every 24 seconds
+chrome.alarms.create(KEEPALIVE_ALARM, { periodInMinutes: 0.25 }); // Every 15 seconds
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === KEEPALIVE_ALARM) {
-    // Just check connection state and reconnect if needed
-    if (!isConnected && (!socket || socket.readyState === WebSocket.CLOSED)) {
-      console.log('Keepalive: reconnecting...');
-      connect();
+    console.log('Keepalive alarm fired, isConnected:', isConnected);
+
+    // Check if we should be connected but aren't
+    if (!isConnected || !socket || socket.readyState !== WebSocket.OPEN) {
+      chrome.storage.session.get(['shouldBeConnected'], (result) => {
+        if (result.shouldBeConnected) {
+          console.log('Should be connected, reconnecting...');
+          reconnectDelay = 1000;
+          connect();
+        }
+      });
     }
   }
 });
 
-// Auto-connect on extension load
-console.log('Browse extension loaded - auto-connecting...');
+// Service worker startup - check if we should reconnect
+chrome.storage.session.get(['shouldBeConnected'], (result) => {
+  console.log('Service worker started, shouldBeConnected:', result.shouldBeConnected);
+  if (result.shouldBeConnected) {
+    // Was previously connected, reconnect immediately
+    reconnectDelay = 1000;
+    connect();
+  }
+});
+
+// Initial connection attempt
+console.log('Browse extension loaded');
 updateBadge(false);
-// Small delay to let service worker fully initialize
-setTimeout(() => connect(), 100);
+setTimeout(() => {
+  // Set initial intent to connect
+  chrome.storage.session.set({ shouldBeConnected: true });
+  connect();
+}, 100);

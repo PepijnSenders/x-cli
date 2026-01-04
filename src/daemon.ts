@@ -10,6 +10,7 @@
 
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { WebSocketServer, WebSocket } from 'ws';
@@ -17,6 +18,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 const BROWSE_DIR = join(homedir(), '.browse');
 const PID_FILE = join(BROWSE_DIR, 'daemon.pid');
 const PORT = parseInt(process.env.BROWSE_PORT || '9222', 10);
+const HEALTH_PORT = PORT + 1; // Health endpoint on 9223
 
 // Message types for client identification
 interface ClientMessage {
@@ -150,7 +152,37 @@ export async function runDaemon(): Promise<void> {
   let extensionSocket: WebSocket | null = null;
   const cliClients = new Map<WebSocket, { pendingRequests: Map<number, (response: unknown) => void> }>();
 
-  const wss = new WebSocketServer({ port: PORT });
+  // HTTP health endpoint for quick connectivity checks
+  const httpServer = createServer((req: IncomingMessage, res: ServerResponse) => {
+    // Enable CORS for extension health checks
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+
+    if (req.url === '/health') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        status: 'ok',
+        extensionConnected: extensionSocket !== null && extensionSocket.readyState === WebSocket.OPEN,
+        cliClients: cliClients.size,
+        uptime: process.uptime(),
+      }));
+    } else {
+      res.writeHead(404);
+      res.end();
+    }
+  });
+
+  httpServer.listen(HEALTH_PORT, '127.0.0.1', () => {
+    console.error(`Health endpoint on http://127.0.0.1:${HEALTH_PORT}/health`);
+  });
+
+  const wss = new WebSocketServer({ port: PORT, host: '127.0.0.1' });
 
   wss.on('connection', (ws) => {
     let clientType: 'extension' | 'cli' | null = null;
@@ -163,6 +195,14 @@ export async function runDaemon(): Promise<void> {
         if (!clientType) {
           if (message.type === 'extension') {
             clientType = 'extension';
+            // Clean up old extension socket if exists
+            if (extensionSocket && extensionSocket !== ws) {
+              try {
+                extensionSocket.close();
+              } catch {
+                // Ignore
+              }
+            }
             extensionSocket = ws;
             console.error('Extension connected');
             ws.send(JSON.stringify({ type: 'connected' }));
@@ -174,6 +214,12 @@ export async function runDaemon(): Promise<void> {
             ws.send(JSON.stringify({ type: 'connected', extensionReady: extensionSocket !== null }));
             return;
           }
+        }
+
+        // Handle ping from extension (heartbeat)
+        if (clientType === 'extension' && message.action === 'ping') {
+          ws.send(JSON.stringify({ type: 'pong' }));
+          return;
         }
 
         // Handle messages based on client type
@@ -214,7 +260,9 @@ export async function runDaemon(): Promise<void> {
     ws.on('close', () => {
       if (clientType === 'extension') {
         console.error('Extension disconnected');
-        extensionSocket = null;
+        if (extensionSocket === ws) {
+          extensionSocket = null;
+        }
       } else if (clientType === 'cli') {
         console.error('CLI client disconnected');
         cliClients.delete(ws);
@@ -232,6 +280,7 @@ export async function runDaemon(): Promise<void> {
   });
 
   const shutdown = () => {
+    httpServer.close();
     wss.close();
     try {
       unlinkSync(PID_FILE);

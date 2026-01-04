@@ -2,23 +2,34 @@
   "manifest_version": 3,
   "name": "Browse",
   "description": "Browser extension for the browse CLI - scrape any webpage to markdown",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "permissions": [
     "activeTab",
     "scripting",
-    "alarms"
+    "alarms",
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>",
-    "ws://localhost/*",
-    "ws://127.0.0.1/*",
-    "http://localhost/*",
-    "http://127.0.0.1/*"
+    "ws://localhost:9222/*",
+    "ws://127.0.0.1:9222/*",
+    "http://localhost:9223/*",
+    "http://127.0.0.1:9223/*"
   ],
+  "icons": {
+    "16": "icon_16.png",
+    "48": "icon_48.png",
+    "128": "icon_128.png"
+  },
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Browse - Click to reconnect"
+    "default_title": "Browse - Click to reconnect",
+    "default_icon": {
+      "16": "icon_16.png",
+      "48": "icon_48.png",
+      "128": "icon_128.png"
+    }
   }
 }
