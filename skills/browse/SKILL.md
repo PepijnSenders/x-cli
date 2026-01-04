@@ -8,6 +8,25 @@ allowed-tools: Bash(browse:*)
 
 Scrape any webpage to markdown using the user's authenticated browser session.
 
+## Installation
+
+```bash
+# macOS/Linux via Homebrew (recommended)
+brew tap pepijnsenders/tap
+brew install browse
+
+# Or via npm
+npm install -g @pep/browse-cli
+```
+
+After installing, load the Chrome extension:
+1. Open `chrome://extensions` in Chrome
+2. Enable "Developer mode" (top right)
+3. Click "Load unpacked"
+4. Select the extension folder:
+   - Homebrew: `/opt/homebrew/opt/browse/share/browse/extension`
+   - npm: `~/.npm-global/lib/node_modules/@pep/browse-cli/extension`
+
 ## Prerequisites
 
 Before using, ensure:
@@ -82,6 +101,7 @@ browse https://example.com --json
 
 | Issue | Solution |
 |-------|----------|
+| `browse: command not found` | Install via `brew tap pepijnsenders/tap && brew install browse` |
 | "Daemon not running" | Run `browse init` |
 | "Extension not connected" | Check Chrome is open, extension shows "ON" badge |
 | Empty output | Try `--wait 5000 --scroll 3` |
