@@ -5,7 +5,7 @@
 [![npm version](https://img.shields.io/npm/v/@pep/browse-cli.svg)](https://www.npmjs.com/package/@pep/browse-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-No API keys. No rate limits. No bot detection. Uses your actual browser session.
+Traditional web scrapers get blocked by Cloudflare, CAPTCHAs, and bot detection. **browse** sidesteps all of that by using your actual Chrome browser - the same session where you're already logged in and verified as human.
 
 <p align="center">
   <img src="assets/demo.gif" alt="browse-cli demo" width="600">
@@ -219,15 +219,24 @@ browse stop    # Stop any existing daemon
 browse init    # Start fresh
 ```
 
-## How It Differs from Other Scrapers
+## Why Not Just Use Puppeteer/Playwright?
+
+Traditional headless browsers and scrapers fail on modern websites because:
+
+- **Cloudflare/Akamai** detect and block headless browsers
+- **CAPTCHAs** stop automated requests
+- **Login walls** require maintaining complex session management
+- **Fingerprinting** identifies non-human browser signatures
+
+**browse** bypasses all of this because it's not pretending to be a browser - it IS your browser, with your cookies, your login sessions, and your human verification already done.
 
 | Feature | browse | Puppeteer/Playwright | curl/wget |
 |---------|--------|---------------------|-----------|
-| Uses your logins | Yes | No | No |
-| Bypasses bot detection | Yes | Sometimes | No |
+| Bypasses Cloudflare | **Yes** | Rarely | No |
+| Bypasses CAPTCHAs | **Yes** | No | No |
+| Uses existing logins | **Yes** | No | No |
 | JavaScript rendering | Yes | Yes | No |
-| Rate limits | Your account's | Often blocked | Often blocked |
-| Setup complexity | Low | Medium | Low |
+| Blocked by rate limits | Rarely | Often | Often |
 
 ## Development
 
