@@ -5,6 +5,7 @@
  *   browse init           Start the daemon
  *   browse stop           Stop the daemon
  *   browse <url>          Scrape URL and output markdown
+ *   browse <url> --raw    Output cleaned HTML instead of markdown
  */
 
 import { Command } from 'commander';
@@ -30,13 +31,11 @@ if (process.argv[2] === '__daemon__') {
   // Default command: browse <url>
   program
     .argument('[url]', 'URL to scrape')
-    .option('--json', 'output JSON with url/title metadata')
-    .option('--html', 'output pruned HTML instead of markdown')
+    .option('--raw', 'output cleaned HTML instead of markdown')
     .option('--wait <ms>', 'wait time after page load in ms', '2000')
     .option('--scroll <n>', 'number of times to scroll for infinite scroll pages', '0')
     .action(async (url: string | undefined, options: {
-      json?: boolean;
-      html?: boolean;
+      raw?: boolean;
       wait?: string;
       scroll?: string;
     }) => {
@@ -47,8 +46,7 @@ if (process.argv[2] === '__daemon__') {
 
       try {
         await scrape(url, {
-          json: options.json,
-          html: options.html,
+          raw: options.raw,
           wait: parseInt(options.wait || '2000', 10),
           scroll: parseInt(options.scroll || '0', 10),
         });

@@ -8,8 +8,7 @@ import { isDaemonRunning, getDaemonPort } from './daemon.js';
 import { htmlToMarkdown } from './utils/html-parser.js';
 
 export interface ScrapeOptions {
-  json?: boolean;
-  html?: boolean;
+  raw?: boolean;
   wait?: number;
   scroll?: number;
 }
@@ -120,7 +119,7 @@ async function connectToDaemon(): Promise<{
 }
 
 /**
- * Scrape a URL and output markdown
+ * Scrape a URL and output markdown (default) or cleaned HTML (--raw)
  */
 export async function scrape(url: string, options: ScrapeOptions): Promise<void> {
   const waitTime = options.wait ?? 2000;
@@ -150,16 +149,11 @@ export async function scrape(url: string, options: ScrapeOptions): Promise<void>
 
     // Output in requested format
     const sourceUrl = response.url || url;
-    if (options.json) {
-      const markdown = options.html ? undefined : htmlToMarkdown(response.html, sourceUrl);
-      console.log(JSON.stringify({
-        url: sourceUrl,
-        title: response.title,
-        content: options.html ? response.html : markdown,
-      }, null, 2));
-    } else if (options.html) {
+    if (options.raw) {
+      // Output cleaned HTML
       console.log(response.html);
     } else {
+      // Output markdown (default)
       console.log(htmlToMarkdown(response.html, sourceUrl));
     }
   } finally {

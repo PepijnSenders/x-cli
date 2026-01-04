@@ -1,142 +1,43 @@
 // src/utils/html-parser.ts
-// CLI-side HTML parsing and markdown conversion (Firecrawl-like quality)
+// CLI-side HTML parsing and markdown conversion (Firecrawl-identical quality)
 
 import { parseHTML as linkedomParse } from 'linkedom';
-import TurndownService from 'turndown';
-// @ts-expect-error - no types available for turndown-plugin-gfm
-import { gfm } from 'turndown-plugin-gfm';
+import {
+  Converter,
+  textRule,
+  commonmarkRules,
+  gfmPlugin,
+  cleanHtml,
+} from '../lib/html-to-md/index.js';
 
-// Configure turndown for high-quality markdown output
-const turndownService = new TurndownService({
+// Create and configure the converter (Firecrawl-identical settings)
+const converter = new Converter({
   headingStyle: 'atx',
   codeBlockStyle: 'fenced',
   bulletListMarker: '-',
   emDelimiter: '_',
   strongDelimiter: '**',
   linkStyle: 'inlined',
-});
-
-// Enable GitHub Flavored Markdown (tables, strikethrough, task lists)
-turndownService.use(gfm);
-
-// Remove empty elements that add noise
-turndownService.addRule('removeEmpty', {
-  filter: (node) => {
-    const isEmpty = !node.textContent?.trim() &&
-                    !node.querySelector('img, video, audio, iframe, svg');
-    return isEmpty && ['DIV', 'SPAN', 'P', 'SECTION', 'ARTICLE'].includes(node.nodeName);
-  },
-  replacement: () => '',
-});
-
-// Remove empty links
-turndownService.addRule('removeEmptyLinks', {
-  filter: (node) => node.nodeName === 'A' && !node.textContent?.trim(),
-  replacement: () => '',
-});
-
-// Remove image-only links (e.g., profile pics that link to profiles)
-turndownService.addRule('imageOnlyLinks', {
-  filter: (node) => {
-    if (node.nodeName !== 'A') return false;
-    const hasImage = !!node.querySelector('img');
-    const textContent = node.textContent?.trim();
-    return hasImage && !textContent;
-  },
-  replacement: () => '',
-});
-
-// Better image handling with alt text
-turndownService.addRule('images', {
-  filter: 'img',
-  replacement: (_content, node) => {
-    const element = node as Element;
-    const alt = element.getAttribute('alt') || '';
-    const src = element.getAttribute('src') || '';
-    if (!src || src.startsWith('data:')) return '';
-    // Clean alt text
-    const cleanAlt = alt.replace(/[\n\r]/g, ' ').trim();
-    return `![${cleanAlt}](${src})`;
-  },
-});
-
-// Clean links - remove tracking params and handle relative URLs
-turndownService.addRule('cleanLinks', {
-  filter: (node) => node.nodeName === 'A' && !!node.getAttribute('href'),
-  replacement: (content, node) => {
-    const element = node as Element;
-    const href = element.getAttribute('href') || '';
-
-    // Skip empty content or anchor-only links
-    if (!content.trim()) return '';
-    if (href.startsWith('#')) return content;
-    if (href.startsWith('javascript:')) return content;
-
-    // Clean tracking params from URLs
-    try {
-      if (href.startsWith('http')) {
-        const url = new URL(href);
-        const trackingParams = [
-          'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
-          'ref', 'fbclid', 'gclid', 'msclkid', 'mc_eid', '_ga',
-        ];
-        trackingParams.forEach(p => url.searchParams.delete(p));
-        return `[${content.trim()}](${url.toString()})`;
-      }
-    } catch {
-      // Invalid URL, use as-is
-    }
-
-    return `[${content.trim()}](${href})`;
-  },
-});
-
-// Handle figure elements with captions
-turndownService.addRule('figures', {
-  filter: 'figure',
-  replacement: (content) => {
-    return '\n\n' + content.trim() + '\n\n';
-  },
-});
-
-// Handle figcaption
-turndownService.addRule('figcaption', {
-  filter: 'figcaption',
-  replacement: (content) => {
-    return content.trim() ? `\n_${content.trim()}_\n` : '';
-  },
-});
-
-// Better code block handling - preserve language hints
-turndownService.addRule('codeBlocks', {
-  filter: (node) => {
-    return node.nodeName === 'PRE' && !!node.querySelector('code');
-  },
-  replacement: (_content, node) => {
-    const element = node as Element;
-    const code = element.querySelector('code');
-    if (!code) return '';
-
-    // Try to detect language from class
-    const className = code.getAttribute('class') || '';
-    const langMatch = className.match(/(?:language-|lang-)(\w+)/);
-    const lang = langMatch ? langMatch[1] : '';
-
-    const codeContent = code.textContent || '';
-    return `\n\n\`\`\`${lang}\n${codeContent.trim()}\n\`\`\`\n\n`;
-  },
-});
-
-// Handle blockquotes better
-turndownService.addRule('blockquotes', {
-  filter: 'blockquote',
-  replacement: (content) => {
-    const trimmed = content.trim();
-    if (!trimmed) return '';
-    const lines = trimmed.split('\n');
-    return '\n\n' + lines.map(line => '> ' + line).join('\n') + '\n\n';
-  },
-});
+})
+  .addRules(textRule, ...commonmarkRules)
+  .use(gfmPlugin())
+  // Remove empty elements that add noise
+  .addRules({
+    filter: ['div', 'span', 'p', 'section', 'article'],
+    replacement: (content, el) => {
+      const isEmpty = !content.trim() &&
+        !el.querySelector('img, video, audio, iframe');
+      return isEmpty ? '' : content;
+    },
+  })
+  // Remove empty links
+  .addRules({
+    filter: ['a'],
+    replacement: (content, _el) => {
+      if (!content.trim()) return '';
+      return null; // Let default link rule handle it
+    },
+  });
 
 /**
  * Normalize markdown output for cleaner results
@@ -160,8 +61,6 @@ function normalizeMarkdown(md: string): string {
     .replace(/^-\s*$/gm, '')
     // Remove standalone numbers (engagement counts like "4", "2,998", "5.7K")
     .replace(/^[\d,\.]+[KMB]?\s*$/gm, '')
-    // Collapse consecutive headers (remove header if followed by another header)
-    .replace(/^(#{1,6} .+)\n\n(#{1,6} )/gm, '$2')
     // Remove short standalone link lines (just a link with minimal text)
     .replace(/^\[.{1,15}\]\([^)]+\)\s*$/gm, '')
     // Clean up any resulting multiple blank lines again
@@ -171,10 +70,14 @@ function normalizeMarkdown(md: string): string {
 }
 
 /**
- * Convert HTML to clean, Firecrawl-like markdown
+ * Convert HTML to clean, Firecrawl-identical markdown
  */
 export function htmlToMarkdown(html: string, sourceUrl?: string): string {
-  const raw = turndownService.turndown(html);
+  // Clean the HTML first (remove noise elements)
+  const cleaned = cleanHtml(html, sourceUrl);
+
+  // Convert to markdown
+  const raw = converter.convertString(cleaned);
   let normalized = normalizeMarkdown(raw);
 
   // Add source footer if URL provided
