@@ -1,6 +1,6 @@
 {
   "name": "@pep/browse-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Scrape any webpage to markdown using your browser session",
   "type": "module",
   "main": "dist/cli.js",
