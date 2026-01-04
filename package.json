@@ -1,5 +1,5 @@
 {
-  "name": "@pepspkgs/browse-cli",
+  "name": "@pep/browse-cli",
   "version": "1.0.2",
   "description": "Scrape any webpage to markdown using your browser session",
   "type": "module",
