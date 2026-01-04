@@ -1,6 +1,6 @@
 {
   "name": "browse-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scrape any webpage to markdown using your browser session",
   "type": "module",
   "main": "dist/cli.js",

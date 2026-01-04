@@ -1,6 +1,6 @@
 {
   "name": "browse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scrape any webpage to markdown using your browser session",
   "author": {
     "name": "PepijnSenders",
@@ -9,6 +9,13 @@
   "homepage": "https://github.com/PepijnSenders/browse-cli",
   "repository": "https://github.com/PepijnSenders/browse-cli",
   "license": "MIT",
-  "keywords": ["scraper", "markdown", "browser", "websocket", "web", "scraping"],
+  "keywords": [
+    "scraper",
+    "markdown",
+    "browser",
+    "websocket",
+    "web",
+    "scraping"
+  ],
   "skills": "./skills/"
 }
