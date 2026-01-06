@@ -88,10 +88,22 @@ export async function startDaemon(): Promise<void> {
     return;
   }
 
-  // Get the actual CLI script path - works both in dev and when installed
-  const cliPath = fileURLToPath(import.meta.url).replace(/daemon\.(js|ts)$/, 'cli.js');
+  // Determine if we're running as a compiled binary or from source/npm
+  // Compiled binaries: execPath is the binary itself (not node/bun)
+  // Source/npm: execPath is node or bun, and we need to pass the script path
+  const isCompiledBinary = !process.execPath.includes('node') && !process.execPath.includes('bun');
 
-  const child = spawn(process.execPath, [cliPath, '__daemon__'], {
+  let spawnArgs: string[];
+  if (isCompiledBinary) {
+    // Compiled binary: spawn the binary itself with __daemon__ argument
+    spawnArgs = ['__daemon__'];
+  } else {
+    // Source or npm: spawn node/bun with the CLI script path
+    const cliPath = fileURLToPath(import.meta.url).replace(/daemon\.(js|ts)$/, 'cli.js');
+    spawnArgs = [cliPath, '__daemon__'];
+  }
+
+  const child = spawn(process.execPath, spawnArgs, {
     detached: true,
     stdio: 'ignore',
     env: { ...process.env, BROWSE_DAEMON: '1' },
