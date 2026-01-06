@@ -13,6 +13,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from '
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
 
 const BROWSE_DIR = join(homedir(), '.browse');
@@ -87,7 +88,10 @@ export async function startDaemon(): Promise<void> {
     return;
   }
 
-  const child = spawn(process.execPath, [process.argv[1], '__daemon__'], {
+  // Get the actual CLI script path - works both in dev and when installed
+  const cliPath = fileURLToPath(import.meta.url).replace(/daemon\.(js|ts)$/, 'cli.js');
+
+  const child = spawn(process.execPath, [cliPath, '__daemon__'], {
     detached: true,
     stdio: 'ignore',
     env: { ...process.env, BROWSE_DAEMON: '1' },
